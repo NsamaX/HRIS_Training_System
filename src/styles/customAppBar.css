@@ -1,0 +1,18 @@
+.nav-button {
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+}
+
+.nav-button.active {
+  opacity: 1;
+}
+
+.toolbar-container {
+  display: flex;
+  flex-grow: 1;
+  margin-left: 40px;
+}
+
+.icon-button {
+  opacity: 1;
+}
