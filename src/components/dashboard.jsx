@@ -40,6 +40,7 @@ const ProgressSection = ({ completed, incomplete, enrolled, total, windowWidth }
   const cumulativePercentage = {
     enrolled: percentages.enrolled + percentages.incomplete + percentages.completed,
     incomplete: percentages.incomplete + percentages.completed,
+    completed: percentages.completed,
   };
 
   const renderProgressCircle = (value, color, text = '', textColor = '#3C4252') => (
