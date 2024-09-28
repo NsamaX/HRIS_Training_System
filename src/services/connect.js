@@ -1,8 +1,7 @@
-// connect.js
 const mongoose = require('mongoose');
 
-// ใช้ URL ของ MongoDB Atlas และแทนที่ <db_password> ด้วยรหัสผ่านจริงของคุณ
-const uri = "mongodb+srv://admin:<db_password>@cluster0.nsd5g.mongodb.net/mydatabase?retryWrites=true&w=majority";
+// ใช้ URL ของ MongoDB Atlas และตั้งค่า DB_USER และ DB_PASSWORD ใน .env เพื่อเข้าใช้งานจากภายนอก
+const uri = "mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.nsd5g.mongodb.net/mydatabase?retryWrites=true&w=majority";
 
 // เชื่อมต่อ MongoDB
 const connectDB = async () => {

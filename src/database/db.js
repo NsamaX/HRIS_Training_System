@@ -181,7 +181,7 @@ db.createCollection('training_courses', {
   validator: {
     $jsonSchema: {
       bsonType: 'object',
-      required: ['course_id', 'course_group', 'name', 'description', 'instructor', 'date_start', 'date_end', 'status'],
+      required: ['course_id', 'course_group', 'name', 'description', 'instructor', 'date_start', 'date_end', 'duration', 'status'],
       properties: {
         course_id: {
           bsonType: 'int',
@@ -211,6 +211,10 @@ db.createCollection('training_courses', {
           bsonType: 'date',
           description: 'End date of the course'
         },
+        duration: {
+          bsonType: 'int',
+          description: 'Duration of the course in days'
+        },
         status: {
           enum: ['planned', 'ongoing', 'completed', 'canceled'],
           description: 'Course status'
@@ -224,7 +228,7 @@ db.createCollection('enrollments', {
   validator: {
     $jsonSchema: {
       bsonType: 'object',
-      required: ['enrollment_id', 'course', 'student', 'enrollment_date', 'grade', 'status'],
+      required: ['enrollment_id', 'course', 'student', 'enrollment_date', 'status'],
       properties: {
         enrollment_id: {
           bsonType: 'int',
@@ -242,10 +246,6 @@ db.createCollection('enrollments', {
           bsonType: 'date',
           description: 'Date of enrollment'
         },
-        grade: {
-          bsonType: 'string',
-          description: 'Final grade of the course'
-        },
         status: {
           enum: ['enrolled', 'in-progress', 'completed', 'failed'],
           description: 'Enrollment status'
@@ -255,27 +255,23 @@ db.createCollection('enrollments', {
   }
 });
 
-db.createCollection('reports', {
+db.createCollection('action_types', {
   validator: {
     $jsonSchema: {
       bsonType: 'object',
-      required: ['report_id', 'report_type', 'report_date', 'report_data'],
+      required: ['action_type_id', 'name', 'description'],
       properties: {
-        report_id: {
+        action_type_id: {
           bsonType: 'int',
-          description: 'Report unique ID'
+          description: 'Action type unique ID'
         },
-        report_type: {
-          bsonType: 'objectId',
-          description: 'Reference to the report type'
-        },
-        report_date: {
-          bsonType: 'date',
-          description: 'Date of the report'
-        },
-        report_data: {
+        name: {
           bsonType: 'string',
-          description: 'Data associated with the report'
+          description: 'Name of the action'
+        },
+        description: {
+          bsonType: 'string',
+          description: 'Action description'
         }
       }
     }
@@ -309,23 +305,92 @@ db.createCollection('transactions', {
   }
 });
 
-db.createCollection('action_types', {
+db.createCollection('report_types', {
   validator: {
     $jsonSchema: {
       bsonType: 'object',
-      required: ['action_type_id', 'name', 'description'],
+      required: ['report_type_id', 'name', 'description'],
       properties: {
-        action_type_id: {
+        report_type_id: {
           bsonType: 'int',
-          description: 'Action type unique ID'
+          description: 'Report type unique ID'
         },
         name: {
           bsonType: 'string',
-          description: 'Name of the action'
+          description: 'Name of the report type'
         },
         description: {
           bsonType: 'string',
-          description: 'Action description'
+          description: 'Description of the report type'
+        }
+      }
+    }
+  }
+});
+
+db.createCollection('reports', {
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['report_id', 'report_type', 'report_date', 'report_data'],
+      properties: {
+        report_id: {
+          bsonType: 'int',
+          description: 'Report unique ID'
+        },
+        report_type: {
+          bsonType: 'objectId',
+          description: 'Reference to the report type'
+        },
+        report_date: {
+          bsonType: 'date',
+          description: 'Date of the report'
+        },
+        report_data: {
+          bsonType: 'string',
+          description: 'Data associated with the report'
+        }
+      }
+    }
+  }
+});
+
+db.createCollection('achievements', {
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['achievement_id', 'name', 'description'],
+      properties: {
+        achievement_id: {
+          bsonType: 'int',
+          description: 'Achievement unique ID'
+        },
+        name: {
+          bsonType: 'string',
+          description: 'Name of the achievement'
+        },
+        description: {
+          bsonType: 'string',
+          description: 'Description of the achievement'
+        }
+      }
+    }
+  }
+});
+
+db.createCollection('hall_of_fame', {
+  validator: {
+    $jsonSchema: {
+      bsonType: 'object',
+      required: ['employee_id', 'achievements'],
+      properties: {
+        employee_id: {
+          bsonType: 'objectId',
+          description: 'Reference to the employee'
+        },
+        achievements: {
+          bsonType: 'objectId',
+          description: 'Reference to the achievements'
         }
       }
     }
