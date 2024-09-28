@@ -1,14 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Dashboard from '../components/dashboard'; 
-
-const employee = {
-  name: 'John Doe',
-  position: 'Software Engineer',
-  department: 'Information Technology',
-  startDate: 'March 10, 2022',
-  email: 'john.doe@example.com',
-  tel: '+66 123 456 789'
-};
 
 const achievements = [
   { name: "Achievement 1", description: "Completed course on JavaScript with a score of 95%" },
@@ -61,6 +52,27 @@ const suggestedCourses = [
 ];
 
 const DashboardPage = () => {
+  const [employee, setEmployee] = useState({});
+  // const [achievements, setAchievements] = useState([]);
+  // const [completedCourses, setCompletedCourses] = useState([]);
+  // const [courses, setCourses] = useState([]);
+  // const [status, setStatus] = useState({});
+  // const [recentlyCourses, setRecentlyCourses] = useState([]);
+  // const [suggestedCourses, setSuggestedCourses] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/employees/0')
+      .then(response => response.json())
+      .then(data => {
+        setEmployee(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching employee data:', error);
+        setLoading(false);
+      });
+  }, []);  
+
   return (
     <Dashboard 
       employee={employee} 

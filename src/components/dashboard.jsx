@@ -211,12 +211,12 @@ const UserInfoBox = ({ employee }) => {
     <div className="user-info-box">
       <div className="user-icon"></div>
       <div className="user-info-text">
-        <TitleMedium>Name: {employee.name}</TitleMedium>
+        <TitleMedium>Name: {`${employee.first_name} ${employee.last_name}`}</TitleMedium>
         <BodyMedium>Position: {employee.position}</BodyMedium>
         <BodyMedium>Department: {employee.department}</BodyMedium>
-        <BodyMedium>Start Date: {employee.startDate}</BodyMedium>
+        <BodyMedium>Start Date: {new Date(employee.date_joined).toLocaleDateString()}</BodyMedium>
         <BodyMedium>Email: {employee.email}</BodyMedium>
-        <BodyMedium>Tel: {employee.tel}</BodyMedium>
+        <BodyMedium>Tel: {employee.phone_number}</BodyMedium>
       </div>
     </div>
   );
