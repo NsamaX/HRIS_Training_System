@@ -1,28 +1,27 @@
 CREATE TABLE roles (
-  role_id INT PRIMARY KEY,
+  role_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   description TEXT,
   permissions JSON
 );
 
 CREATE TABLE positions (
-  position_id INT PRIMARY KEY,
+  position_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   description TEXT
 );
 
 CREATE TABLE departments (
-    department_id INT PRIMARY KEY,
+    department_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     description TEXT
 );
 
 CREATE TABLE employees (
-    employee_id INT PRIMARY KEY,
+    employee_id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    phone_number VARCHAR(15),
     role INT,
     position INT,
     department INT,
@@ -41,13 +40,13 @@ CREATE TABLE auth (
 );
 
 CREATE TABLE training_groups (
-    group_id INT PRIMARY KEY,
+    group_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     description TEXT
 );
 
 CREATE TABLE training_courses (
-    course_id INT PRIMARY KEY,
+    course_id INT PRIMARY KEY AUTO_INCREMENT,
     course_group INT,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -61,7 +60,7 @@ CREATE TABLE training_courses (
 );
 
 CREATE TABLE enrollments (
-    enrollment_id INT PRIMARY KEY,
+    enrollment_id INT PRIMARY KEY AUTO_INCREMENT,
     course INT,
     student INT,
     enrollment_date DATE NOT NULL,
@@ -71,13 +70,13 @@ CREATE TABLE enrollments (
 );
 
 CREATE TABLE action_types (
-    action_type_id INT PRIMARY KEY,
+    action_type_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     description TEXT
 );
 
 CREATE TABLE transactions (
-    transaction_id INT PRIMARY KEY,
+    transaction_id INT PRIMARY KEY AUTO_INCREMENT,
     action_type INT,
     user INT,
     timestamp DATETIME NOT NULL,
@@ -86,13 +85,13 @@ CREATE TABLE transactions (
 );
 
 CREATE TABLE report_types (
-    report_type_id INT PRIMARY KEY,
+    report_type_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     description TEXT
 );
 
 CREATE TABLE reports (
-    report_id INT PRIMARY KEY,
+    report_id INT PRIMARY KEY AUTO_INCREMENT,
     report_type INT,
     report_date DATE NOT NULL,
     report_data TEXT,
@@ -100,7 +99,7 @@ CREATE TABLE reports (
 );
 
 CREATE TABLE achievements (
-    achievement_id INT PRIMARY KEY,
+    achievement_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     description TEXT
 );
