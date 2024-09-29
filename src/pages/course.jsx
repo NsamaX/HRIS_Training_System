@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Course from '../components/course';
 
-const fetchCourseData = async (courseId) => {
-  const response = await fetch(`https://api.example.com/courses/${courseId}`);
+const fetchCourseData = async (course_id) => {
+  const response = await fetch(`http://localhost:5000/api/courses?id=${course_id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch course data');
   }

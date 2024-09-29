@@ -152,7 +152,18 @@ VALUES
     '2024-01-10', 
     '2024-01-15', 
     5, 
-    'planned'
+    'planned',
+    'rating': {
+        'score': 0,
+        'star': {
+        5: 0,
+        4: 0,
+        3: 0,
+        2: 0,
+        1: 0,
+        },
+        'vote': 0,
+    }
 ),
 (
     2, 
@@ -162,7 +173,18 @@ VALUES
     '2024-02-01', 
     '2024-02-10', 
     10, 
-    'ongoing'
+    'ongoing',
+    'rating': {
+        'score': 4.5,
+        'star': {
+        5: 0.6,
+        4: 0.25,
+        3: 0.1,
+        2: 0.04,
+        1: 0.01,
+        },
+        'vote': 0,
+    }
 ),
 (
     2, 
@@ -172,7 +194,18 @@ VALUES
     '2024-03-05', 
     '2024-03-10', 
     5, 
-    'planned'
+    'planned',
+    'rating': {
+        'score': 0,
+        'star': {
+        5: 0,
+        4: 0,
+        3: 0,
+        2: 0,
+        1: 0,
+        },
+        'vote': 0,
+    }
 );
 
 INSERT INTO enrollments (course_id, student_id, enrollment_date, status)

@@ -77,7 +77,9 @@ app.get('/api/hall-of-fame/:id', (req, res) => {
 });
 
 app.get('/api/courses', (req, res) => {
-  const query = `
+  const courseId = req.query.id;
+  
+  let query = `
     SELECT 
       c.course_id, 
       c.name AS name, 
@@ -89,15 +91,21 @@ app.get('/api/courses', (req, res) => {
     FROM 
       training_courses c 
     LEFT JOIN 
-      training_groups g ON c.course_group_id = g.group_id`;
-
-  db.query(query, (error, results) => {
+      training_groups g ON c.course_group_id = g.group_id
+  `;
+  
+  if (courseId) {
+    query += ` WHERE c.course_id = ?`;
+  }
+  
+  db.query(query, courseId ? [courseId] : [], (error, results) => {
     if (error) {
       return res.status(500).json({ error: 'Database error' });
     }
     res.json(results);
   });
 });
+
 
 app.listen(5000, () => {
   console.log('Server started on port 5000');
