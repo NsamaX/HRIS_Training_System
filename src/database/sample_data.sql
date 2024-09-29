@@ -142,7 +142,7 @@ VALUES
     'Courses to enhance communication in the workplace'
 );
 
-INSERT INTO training_courses (course_group_id, name, description, instructor_id, date_start, date_end, duration, status)
+INSERT INTO training_courses (course_group_id, name, description, instructor_id, date_start, date_end, duration, status, rating)
 VALUES
 (
     1, 
@@ -153,17 +153,7 @@ VALUES
     '2024-01-15', 
     5, 
     'planned',
-    'rating': {
-        'score': 0,
-        'star': {
-        5: 0,
-        4: 0,
-        3: 0,
-        2: 0,
-        1: 0,
-        },
-        'vote': 0,
-    }
+    null
 ),
 (
     2, 
@@ -174,17 +164,17 @@ VALUES
     '2024-02-10', 
     10, 
     'ongoing',
-    'rating': {
-        'score': 4.5,
-        'star': {
-        5: 0.6,
-        4: 0.25,
-        3: 0.1,
-        2: 0.04,
-        1: 0.01,
+    '{
+        "score": 4.5,
+        "star": {
+            "5": 0.6,
+            "4": 0.25,
+            "3": 0.1,
+            "2": 0.04,
+            "1": 0.01
         },
-        'vote': 0,
-    }
+        "vote": 0
+    }'
 ),
 (
     2, 
@@ -195,41 +185,35 @@ VALUES
     '2024-03-10', 
     5, 
     'planned',
-    'rating': {
-        'score': 0,
-        'star': {
-        5: 0,
-        4: 0,
-        3: 0,
-        2: 0,
-        1: 0,
-        },
-        'vote': 0,
-    }
+    null
 );
 
-INSERT INTO enrollments (course_id, student_id, enrollment_date, status)
+INSERT INTO enrollments (course_id, user_enrolled_id, student_id, enrollment_date, status)
 VALUES
 (
     1, 
+    1,
     1, 
     '2024-01-05', 
     'completed'
 ),
 (
     2, 
+    1,
     2, 
     '2024-01-30', 
     'in-progress'
 ),
 (
     3, 
+    2,
     3, 
     '2024-02-25', 
     'enrolled'
 ),
 (
     3, 
+    2,
     4, 
     '2024-02-25', 
     'enrolled'

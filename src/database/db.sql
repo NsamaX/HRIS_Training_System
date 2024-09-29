@@ -67,6 +67,7 @@ CREATE TABLE training_courses (
 CREATE TABLE enrollments (
     enrollment_id INT PRIMARY KEY AUTO_INCREMENT,
     course_id INT NOT NULL,
+    user_enrolled_id INT NOT NULL,
     student_id INT NOT NULL,
     enrollment_date DATE NOT NULL,
     status ENUM('enrolled', 'in-progress', 'completed', 'failed') NOT NULL,
