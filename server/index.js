@@ -1,17 +1,20 @@
 const express = require('express');
-const mysql = require('mysql');
 const cors = require('cors');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+const mysql = require('mysql');
+const { Security } = require('@mui/icons-material');
+require('dotenv').config();
+
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'hris_training_system',
-  port: 3306,
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
+  port: process.env.PORT,
 });
 
 db.connect((err) => {
