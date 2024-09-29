@@ -1,5 +1,6 @@
 -- DROP DATABASE hris_training_system;
 -- CREATE DATABASE hris_training_system;
+-- USE hris_training_system;
 
 CREATE TABLE roles (
   role_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -36,7 +37,7 @@ CREATE TABLE employees (
 );
 
 CREATE TABLE auth (
-    user_id INT,
+    user_id INT NOT NULL PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     hashed_password VARCHAR(255) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES employees(employee_id)
@@ -57,15 +58,15 @@ CREATE TABLE training_courses (
     date_start DATE NOT NULL,
     date_end DATE NOT NULL,
     duration INT NOT NULL,
-    status ENUM('planned', 'ongoing', 'completed', 'canceled') NOT NULL,
+    status ENUM('planned', 'incoming', 'ongoing', 'canceled') NOT NULL,
     FOREIGN KEY (course_group_id) REFERENCES training_groups(group_id),
     FOREIGN KEY (instructor_id) REFERENCES employees(employee_id)
 );
 
 CREATE TABLE enrollments (
     enrollment_id INT PRIMARY KEY AUTO_INCREMENT,
-    course_id INT,
-    student_id INT,
+    course_id INT NOT NULL,
+    student_id INT NOT NULL,
     enrollment_date DATE NOT NULL,
     status ENUM('enrolled', 'in-progress', 'completed', 'failed') NOT NULL,
     FOREIGN KEY (course_id) REFERENCES training_courses(course_id),
@@ -80,11 +81,11 @@ CREATE TABLE action_types (
 
 CREATE TABLE transactions (
     transaction_id INT PRIMARY KEY AUTO_INCREMENT,
-    action_type_id INT,
-    user INT,
+    action_type_id INT NOT NULL,
+    user_id INT NOT NULL,
     timestamp DATETIME NOT NULL,
     FOREIGN KEY (action_type_id) REFERENCES action_types(action_type_id),
-    FOREIGN KEY (user) REFERENCES employees(employee_id)
+    FOREIGN KEY (user_id) REFERENCES employees(employee_id)
 );
 
 CREATE TABLE report_types (
@@ -95,7 +96,7 @@ CREATE TABLE report_types (
 
 CREATE TABLE reports (
     report_id INT PRIMARY KEY AUTO_INCREMENT,
-    report_type_id INT,
+    report_type_id INT NOT NULL,
     report_date DATE NOT NULL,
     report_data TEXT,
     FOREIGN KEY (report_type_id) REFERENCES report_types(report_type_id)
@@ -108,8 +109,8 @@ CREATE TABLE achievements (
 );
 
 CREATE TABLE hall_of_fame (
-    employee_id INT,
-    achievement_id INT,
+    employee_id INT NOT NULL,
+    achievement_id INT NOT NULL,
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
     FOREIGN KEY (achievement_id) REFERENCES achievements(achievement_id)
 );
