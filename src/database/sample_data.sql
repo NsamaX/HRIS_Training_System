@@ -16,7 +16,7 @@ VALUES
 ('Human Resources', 'Manages employee recruitment and welfare'),
 ('Sales Department', 'Responsible for sales and customer relationships');
 
-INSERT INTO employees (first_name, last_name, email, role, position, department, date_joined, status)
+INSERT INTO employees (first_name, last_name, email, role_id, position_id, department_id, date_joined, status)
 VALUES
 ('John', 'Doe', 'john.doe@example.com', 1, 1, 1, '2023-01-15', 'active'),
 ('Jane', 'Smith', 'jane.smith@example.com', 2, 2, 2, '2022-07-20', 'active'),
@@ -36,13 +36,13 @@ VALUES
 ('Technical Skills', 'Courses for improving technical knowledge and expertise'),
 ('Communication Skills', 'Courses to enhance communication in the workplace');
 
-INSERT INTO training_courses (course_group, name, description, instructor, date_start, date_end, duration, status)
+INSERT INTO training_courses (course_group_id, name, description, instructor_id, date_start, date_end, duration, status)
 VALUES
 (1, 'Leadership 101', 'Introductory course on leadership principles', 1, '2024-01-10', '2024-01-15', 5, 'planned'),
 (2, 'Advanced Java Programming', 'Deep dive into Java for advanced users', 1, '2024-02-01', '2024-02-10', 10, 'ongoing'),
 (3, 'Effective Communication', 'Improve communication skills in a professional setting', 2, '2024-03-05', '2024-03-10', 5, 'planned');
 
-INSERT INTO enrollments (course, student, enrollment_date, status)
+INSERT INTO enrollments (course_id, student_id, enrollment_date, status)
 VALUES
 (1, 1, '2024-01-05', 'enrolled'),
 (2, 2, '2024-01-30', 'in-progress'),
@@ -56,7 +56,7 @@ VALUES
 ('Data Update', 'User updated a data record'),
 ('Training Enrollment', 'User enrolled in a training course');
 
-INSERT INTO transactions (action_type, user, timestamp)
+INSERT INTO transactions (action_type_id, user, timestamp)
 VALUES
 (1, 1, '2024-01-10 08:30:00'),
 (2, 1, '2024-01-10 17:00:00'),
@@ -69,7 +69,7 @@ VALUES
 ('Training Summary', 'Summary report of training courses and enrollments'),
 ('System Usage', 'Detailed report on system usage activities');
 
-INSERT INTO reports (report_type, report_date, report_data)
+INSERT INTO reports (report_type_id, report_date, report_data)
 VALUES
 (1, '2024-01-31', 'Performance evaluations for all employees in Q1 2024'),
 (2, '2024-02-15', 'Summary of training courses conducted in January 2024'),
@@ -82,7 +82,7 @@ VALUES
 ('Perfect Attendance', 'Awarded to employees with no absences for the year'),
 ('Innovation Award', 'Recognizes creative solutions implemented by an employee');
 
-INSERT INTO hall_of_fame (employee_id, achievements)
+INSERT INTO hall_of_fame (employee_id, achievement_id)
 VALUES
 (1, 1),
 (2, 2),

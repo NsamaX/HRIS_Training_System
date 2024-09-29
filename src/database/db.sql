@@ -1,3 +1,6 @@
+-- DROP DATABASE hris_training_system;
+-- CREATE DATABASE hris_training_system;
+
 CREATE TABLE roles (
   role_id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -22,14 +25,14 @@ CREATE TABLE employees (
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    role INT,
-    position INT,
-    department INT,
+    role_id INT,
+    position_id INT,
+    department_id INT,
     date_joined DATE NOT NULL,
     status ENUM('active', 'inactive', 'terminated'),
-    FOREIGN KEY (role) REFERENCES roles(role_id),
-    FOREIGN KEY (position) REFERENCES positions(position_id),
-    FOREIGN KEY (department) REFERENCES departments(department_id)
+    FOREIGN KEY (role_id) REFERENCES roles(role_id),
+    FOREIGN KEY (position_id) REFERENCES positions(position_id),
+    FOREIGN KEY (department_id) REFERENCES departments(department_id)
 );
 
 CREATE TABLE auth (
@@ -47,26 +50,26 @@ CREATE TABLE training_groups (
 
 CREATE TABLE training_courses (
     course_id INT PRIMARY KEY AUTO_INCREMENT,
-    course_group INT,
+    course_group_id INT,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    instructor INT,
+    instructor_id INT,
     date_start DATE NOT NULL,
     date_end DATE NOT NULL,
     duration INT NOT NULL,
     status ENUM('planned', 'ongoing', 'completed', 'canceled') NOT NULL,
-    FOREIGN KEY (course_group) REFERENCES training_groups(group_id),
-    FOREIGN KEY (instructor) REFERENCES employees(employee_id)
+    FOREIGN KEY (course_group_id) REFERENCES training_groups(group_id),
+    FOREIGN KEY (instructor_id) REFERENCES employees(employee_id)
 );
 
 CREATE TABLE enrollments (
     enrollment_id INT PRIMARY KEY AUTO_INCREMENT,
-    course INT,
-    student INT,
+    course_id INT,
+    student_id INT,
     enrollment_date DATE NOT NULL,
     status ENUM('enrolled', 'in-progress', 'completed', 'failed') NOT NULL,
-    FOREIGN KEY (course) REFERENCES training_courses(course_id),
-    FOREIGN KEY (student) REFERENCES employees(employee_id)
+    FOREIGN KEY (course_id) REFERENCES training_courses(course_id),
+    FOREIGN KEY (student_id) REFERENCES employees(employee_id)
 );
 
 CREATE TABLE action_types (
@@ -77,10 +80,10 @@ CREATE TABLE action_types (
 
 CREATE TABLE transactions (
     transaction_id INT PRIMARY KEY AUTO_INCREMENT,
-    action_type INT,
+    action_type_id INT,
     user INT,
     timestamp DATETIME NOT NULL,
-    FOREIGN KEY (action_type) REFERENCES action_types(action_type_id),
+    FOREIGN KEY (action_type_id) REFERENCES action_types(action_type_id),
     FOREIGN KEY (user) REFERENCES employees(employee_id)
 );
 
@@ -92,10 +95,10 @@ CREATE TABLE report_types (
 
 CREATE TABLE reports (
     report_id INT PRIMARY KEY AUTO_INCREMENT,
-    report_type INT,
+    report_type_id INT,
     report_date DATE NOT NULL,
     report_data TEXT,
-    FOREIGN KEY (report_type) REFERENCES report_types(report_type_id)
+    FOREIGN KEY (report_type_id) REFERENCES report_types(report_type_id)
 );
 
 CREATE TABLE achievements (
@@ -106,8 +109,7 @@ CREATE TABLE achievements (
 
 CREATE TABLE hall_of_fame (
     employee_id INT,
-    achievements INT,
-    PRIMARY KEY (employee_id, achievements),
+    achievement_id INT,
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
-    FOREIGN KEY (achievements) REFERENCES achievements(achievement_id)
+    FOREIGN KEY (achievement_id) REFERENCES achievements(achievement_id)
 );

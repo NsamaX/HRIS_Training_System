@@ -101,14 +101,10 @@ const Courses = ({ courses }) => {
 const CourseList = ({ courses }) => {
   return (
     <div className="course-list-container">
-      {courses.map((course, index) => {
-        const courseTitle = course.name;
-        const courseDetails = course.details;
-        const courseId = course.id;
-
+      {courses.map((course) => {
         return (
-          <div key={index}>
-            <CourseBox title={courseTitle} info={courseDetails} courseId={courseId} />
+          <div key={course.course_id}>
+            <CourseBox course={course} />
           </div>
         );
       })}
@@ -116,11 +112,11 @@ const CourseList = ({ courses }) => {
   );
 };
 
-const CourseBox = ({ title, info, courseId }) => {
+const CourseBox = ({ course }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/course/${courseId}`);
+    navigate(`/course/${course.course_id}`);
   };
 
   return (
@@ -129,12 +125,12 @@ const CourseBox = ({ title, info, courseId }) => {
         {/* image */}
       </div>
       <div className="course-info title">
-        <TitleMedium onClick={handleClick}>{title}</TitleMedium>
-        {Object.entries(info).map(([key, value]) => (
-          <BodyMedium onClick={handleClick} key={key}>
-            {`${key}: ${value}`}
-          </BodyMedium>
-        ))}
+        <TitleMedium onClick={handleClick}>{course.name}</TitleMedium>
+        <BodyMedium onClick={handleClick}>{course.description}</BodyMedium>
+        <BodyMedium onClick={handleClick}>Duration: {course.duration} days</BodyMedium>
+        <BodyMedium onClick={handleClick}>Start Date: {new Date(course.date_start).toLocaleDateString()}</BodyMedium>
+        <BodyMedium onClick={handleClick}>End Date: {new Date(course.date_end).toLocaleDateString()}</BodyMedium>
+        <BodyMedium onClick={handleClick}>Group Name: {course.group_name}</BodyMedium>
       </div>
     </article>
   );
