@@ -75,14 +75,14 @@ const Courses = ({ courses }) => (
 const CourseList = ({ courses }) => (
   <div className="course-list-container">
     {courses.map(course => (
-      <CourseBox key={course.course_id} course={course} />
+      <CourseBox key={course.id} course={course} />
     ))}
   </div>
 );
 
 const CourseBox = ({ course }) => {
   const navigate = useNavigate();
-  const handleClick = () => navigate(`/course/${course.course_id}`);
+  const handleClick = () => navigate(`/course?id=${course.id}`);
 
   return (
     <article className="course-box" onClick={handleClick}>

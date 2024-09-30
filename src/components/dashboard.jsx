@@ -163,7 +163,7 @@ const Dashboard = ({ employee, recentlyCourses, status, completedCourses, achiev
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleClick = (id) => navigate(`/course/${id}`);
+  const handleClick = (id) => navigate(`/course?id=${id}`);
 
   const renderUserInfoBox = () => (
     <div className='user-box'>

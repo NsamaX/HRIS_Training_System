@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Course from '../components/course';
 
-const fetchCourseData = async (course_id) => {
-  const response = await fetch(`http://localhost:5000/api/courses?id=${course_id}`);
+const fetchCourseData = async (id) => {
+  const response = await fetch(`http://localhost:5000/api/courses?id=${id}`);
   if (!response.ok) throw new Error('Failed to fetch course data');
   return response.json();
 };
 
 const CoursesPage = () => {
-  const { id } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get('id');
   const [courseData, setCourseData] = useState(null);
   const [error, setError] = useState(null);
   const [star, setStar] = useState(0);
@@ -19,7 +21,7 @@ const CoursesPage = () => {
       try {
         const data = await fetchCourseData(id);
         setCourseData(data);
-        setStar(data?.rating.vote || 0);
+        setStar(0);
       } catch (err) {
         setError(err.message);
       }
@@ -33,12 +35,13 @@ const CoursesPage = () => {
   if (!courseData) return <div>Loading...</div>;
 
   return (
-    <Course 
-      courseData={courseData}
-      star={star}
-      ratingMap={courseData?.rating.star}
-      onRatingSelected={handleRatingSelected}
-    />
+    // <Course 
+    //   courseData={courseData}
+    //   star={star}
+    //   ratingMap={courseData?.rating.star}
+    //   onRatingSelected={handleRatingSelected}
+    // />
+    null
   );
 };
 
