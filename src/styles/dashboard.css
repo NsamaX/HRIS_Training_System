@@ -212,16 +212,16 @@
     }
 }
 
-.suggested-course-rating {
+.suggested-course-score {
     display: flex;
     flex-direction: row;
 }
 
-.course-rating-text {
+.course-score-text {
     margin-right: 6px;
 }
 
-.course-rating-icon {
+.course-score-icon {
     position: relative;
     top: -3px;
     margin-left: 6px;

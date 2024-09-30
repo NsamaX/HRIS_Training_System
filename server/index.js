@@ -23,6 +23,7 @@ db.connect((err) => {
 
 app.get('/api/employees', (req, res) => {
   const id = req.query.id;
+
   if (!id) {
     return res.status(400).json({ error: 'Employee id is required' });
   }
@@ -32,9 +33,9 @@ app.get('/api/employees', (req, res) => {
       e.first_name,
       e.last_name,
       e.email,
-      e.date_joined,
       p.name AS position, 
-      d.name AS department 
+      d.name AS department,
+      e.date_joined
     FROM 
       employees e 
     LEFT JOIN 
@@ -58,6 +59,7 @@ app.get('/api/employees', (req, res) => {
 
 app.get('/api/recent-courses', (req, res) => {
   const id = req.query.id;
+
   if (!id) {
     return res.status(400).json({ error: 'User id is required' });
   }
@@ -69,13 +71,13 @@ app.get('/api/recent-courses', (req, res) => {
       t.timestamp
     FROM 
       enrollments en
-    JOIN 
+    LEFT JOIN 
       transactions t ON t.user_id = en.student_id 
         AND JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = en.course_id
-    JOIN 
+    LEFT JOIN 
       training_courses c ON JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = c.course_id
     WHERE 
-      en.student_id = 1
+      en.student_id = ?
     ORDER BY 
       en.enrollment_date DESC 
     LIMIT 4;
@@ -95,8 +97,72 @@ app.get('/api/recent-courses', (req, res) => {
   });
 });
 
+app.get('/api/course-status', (req, res) => {
+  const id = req.query.id;
+
+  if (!id) {
+    return res.status(400).json({ error: 'Student id is required' });
+  }
+
+  const query = `
+    SELECT 
+      SUM(CASE WHEN ec.status = 'completed' THEN 1 ELSE 0 END) AS completed,
+      SUM(CASE WHEN ec.status = 'in-complete' THEN 1 ELSE 0 END) AS incomplete,
+      SUM(CASE WHEN ec.status = 'enrolled' THEN 1 ELSE 0 END) AS enrolled
+    FROM 
+      enrollments ec
+    WHERE 
+      ec.student_id = ?;
+  `;
+
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      console.error('Database error:', error);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    
+    const response = results.length > 0 ? results[0] : { completed: 0, incomplete: 0, inprogress: 0, enrolled: 0 };
+    res.json(response);
+  });
+});
+
+app.get('/api/completed-courses', (req, res) => {
+  const id = req.query.id;
+  
+  if (!id) {
+    return res.status(400).json({ error: 'Student id is required' });
+  }
+
+  const query = `
+    SELECT 
+      e.course_id AS id,
+      t.name,
+      t.description
+    FROM 
+      enrollments e
+    LEFT JOIN 
+      training_courses t ON e.course_id = t.course_id
+    WHERE 
+      e.student_id = ? AND e.status = 'completed';
+  `;
+
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      console.error('Database error:', error);
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No completed courses found for this student' });
+    }
+
+    res.json(results);
+  });
+});
+
 app.get('/api/hall-of-fame', (req, res) => {
   const id = req.query.id;
+
   if (!id) {
     return res.status(400).json({ error: 'Employee id is required' });
   }
@@ -104,7 +170,7 @@ app.get('/api/hall-of-fame', (req, res) => {
   const query = `
     SELECT 
       a.name, 
-      a.description 
+      a.description
     FROM 
       hall_of_fame h 
     LEFT JOIN 
@@ -124,8 +190,32 @@ app.get('/api/hall-of-fame', (req, res) => {
   });
 });
 
+app.get('/api/suggested-courses', (req, res) => {
+  const query = `
+    SELECT 
+      c.course_id AS id, 
+      c.name, 
+      c.description,
+      json_extract(c.rating, '$.score') AS score
+    FROM 
+      training_courses c 
+    LEFT JOIN 
+      training_groups g ON c.course_group_id = g.group_id
+    ORDER BY
+      json_extract(c.rating, '$.score') DESC;
+  `;
+
+  db.query(query, (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results);
+  });
+});
+
 app.get('/api/enrolled-courses', (req, res) => {
   const id = req.query.id;
+
   if (!id) {
     return res.status(400).json({ error: 'Employee id is required' });
   }
@@ -141,19 +231,19 @@ app.get('/api/enrolled-courses', (req, res) => {
           e2.employee_id = en.user_enrolled_id
       ) AS 'assign_by',
       en.enrollment_date,
-      t.name AS course_name,
+      t.name,
       t.date_start,
       t.date_end,
       t.duration,
       t.status
     FROM 
       enrollments en 
-    JOIN 
+    LEFT JOIN 
       employees e ON en.student_id = e.employee_id 
-    JOIN 
+    LEFT JOIN 
       training_courses t ON en.course_id = t.course_id 
     WHERE 
-      en.enrollment_id = ?
+      en.student_id = ?
   `;
 
   db.query(query, [id], (error, results) => {
@@ -168,7 +258,7 @@ app.get('/api/enrolled-courses', (req, res) => {
 });
 
 app.get('/api/courses', (req, res) => {
-  const courseId = req.query.id;
+  const id = req.query.id;
   
   let query = `
     SELECT 
@@ -185,11 +275,11 @@ app.get('/api/courses', (req, res) => {
       training_groups g ON c.course_group_id = g.group_id
   `;
   
-  if (courseId) {
+  if (id) {
     query += ` WHERE c.course_id = ?`;
   }
   
-  db.query(query, courseId ? [courseId] : [], (error, results) => {
+  db.query(query, id ? [id] : [], (error, results) => {
     if (error) {
       return res.status(500).json({ error: 'Database error' });
     }

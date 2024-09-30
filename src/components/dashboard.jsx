@@ -40,14 +40,16 @@ const CourseRecently = ({ courses, handleClick }) => {
   );
 };
 
-const getInitials = (courseName) => {
-  return courseName
+const getInitials = (name) => {
+  return name
     .split(' ')
     .map(word => word.charAt(0).toUpperCase())
     .join('');
 };
 
-const ProgressSection = ({ completed, incomplete, enrolled, total, windowWidth }) => {
+const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
+  console.log(completed, incomplete, enrolled);
+  const total = completed + incomplete + enrolled;
   const percentages = {
     completed: (completed / total) * 100,
     incomplete: (incomplete / total) * 100,
@@ -80,9 +82,9 @@ const ProgressSection = ({ completed, incomplete, enrolled, total, windowWidth }
       <div className="progress-info">
         <TitleMedium>Progress</TitleMedium>
         <div className="progress-circle">
-          {renderProgressCircle(cumulativePercentage.enrolled, '#3C4252')}
-          {renderProgressCircle(cumulativePercentage.incomplete, '#FFC501')}
-          {renderProgressCircle(cumulativePercentage.completed, '#25D79B', `${total} Total`, '#3C4252')}
+          {renderProgressCircle(cumulativePercentage.enrolled, enrolled === 0 ? '#D9D9D9' : '#3C4252')}
+          {renderProgressCircle(cumulativePercentage.incomplete, incomplete === 0 ? '#D9D9D9' : '#FFC501')}
+          {renderProgressCircle(cumulativePercentage.completed, completed === 0 ? '#D9D9D9' : '#25D79B', `${total} Total`, '#3C4252')}
         </div>
       </div>
       {windowWidth >= 600 && (
@@ -106,16 +108,16 @@ const ProgressSection = ({ completed, incomplete, enrolled, total, windowWidth }
   );
 };
 
-const CompletedCourses = ({ completedCourses, handleClick, windowWidth }) => {
+const CompletedCourses = ({ courses, handleClick, windowWidth }) => {
   return (
     <div className="achievements-container">
       <TitleMedium>Completed Courses</TitleMedium>
-      {completedCourses.map((course, index) => (
+      {courses.map((course, index) => (
         <CompletedCourseRow
           key={index}
-          courseName={course.name}
+          name={course.name}
           description={course.description}
-          courseId={course.courseId}
+          id={course.id}
           handleClick={handleClick}
           windowWidth={windowWidth}
         />
@@ -124,7 +126,7 @@ const CompletedCourses = ({ completedCourses, handleClick, windowWidth }) => {
   );
 };
 
-const CompletedCourseRow = ({ courseName, description, courseId, handleClick, windowWidth }) => {
+const CompletedCourseRow = ({ name, description, id, handleClick, windowWidth }) => {
   return (
     <div className='achievement-column'>
       {windowWidth <= 600 && (
@@ -133,10 +135,10 @@ const CompletedCourseRow = ({ courseName, description, courseId, handleClick, wi
           <hr />
         </>
       )}
-      <div className="suggested-course-row" onClick={() => handleClick(courseId)}>
+      <div className="suggested-course-row" onClick={() => handleClick(id)}>
         <div className="suggested-course-icon"></div>
         <div className="archievement-text">
-          <TitleSmall>{courseName}</TitleSmall>
+          <TitleSmall>{name}</TitleSmall>
           <BodySmall>{description}</BodySmall>
         </div>
       </div>
@@ -180,17 +182,17 @@ const ArchievementRow = ({ name, description, windowWidth }) => {
   );
 };
 
-const SuggestedCourses = ({ suggestedCourses, handleClick, windowWidth }) => {
+const SuggestedCourses = ({ courses, handleClick, windowWidth }) => {
   return (
     <div className="achievements-container">
       <TitleMedium>Suggested Courses</TitleMedium>
-      {suggestedCourses.map((course, index) => (
+      {courses.map((course, index) => (
         <SuggestedCourseRow
           key={index}
-          rating={course.rating}
-          courseName={course.name}
+          name={course.name}
           description={course.description}
-          courseId={course.courseId}
+          score={course.score}
+          id={course.id}
           handleClick={handleClick}
           windowWidth={windowWidth}
         />
@@ -199,7 +201,7 @@ const SuggestedCourses = ({ suggestedCourses, handleClick, windowWidth }) => {
   );
 };
 
-const SuggestedCourseRow = ({ rating, courseName, description, courseId, handleClick, windowWidth }) => {
+const SuggestedCourseRow = ({ name, description, score, id, handleClick, windowWidth }) => {
   return (
     <div className='archievement-column'>
       {windowWidth <= 600 && (
@@ -208,13 +210,17 @@ const SuggestedCourseRow = ({ rating, courseName, description, courseId, handleC
           <hr />
         </>
       )}
-      <div className="suggested-course-row" onClick={() => handleClick(courseId)}>
+      <div className="suggested-course-row" onClick={() => handleClick(id)}>
         <div className="suggested-course-icon"></div>
         <div className="archievement-text">
-          <div className="suggested-course-rating">
-            <TitleSmall className='course-rating-text'>{courseName}</TitleSmall>
-            <BodyMedium>{rating}</BodyMedium>
-            <BodyMedium className='course-rating-icon' style={{ color: '#FFC501' }}>★</BodyMedium>
+          <div className="suggested-course-score">
+            <TitleSmall className='course-score-text'>{name}</TitleSmall>
+            {score !== null && (
+              <>
+                <BodyMedium>{score}</BodyMedium>
+                <BodyMedium className='course-score-icon' style={{ color: '#FFC501' }}>★</BodyMedium>
+              </>
+            )}
           </div>
           <BodySmall>{description}</BodySmall>
         </div>
@@ -225,10 +231,10 @@ const SuggestedCourseRow = ({ rating, courseName, description, courseId, handleC
 
 const CourseRow = ({ course, handleClick }) => {
   return (
-    <tr onClick={() => handleClick(course.course_id)}>
+    <tr onClick={() => handleClick(course.id)}>
       <td data-label="Assign By:"><BodyMedium>{course.assign_by}</BodyMedium></td>
       <td data-label="Enroll Date:"><BodyMedium>{new Date(course.enrollment_date).toLocaleDateString()}</BodyMedium></td>
-      <td data-label="Course Name:"><BodyMedium>{course.course_name}</BodyMedium></td>
+      <td data-label="Course Name:"><BodyMedium>{course.name}</BodyMedium></td>
       <td data-label="Start Date:"><BodyMedium>{new Date(course.date_start).toLocaleDateString()}</BodyMedium></td>
       <td data-label="End Date:"><BodyMedium>{new Date(course.date_end).toLocaleDateString()}</BodyMedium></td>
       <td data-label="Duration:"><BodyMedium>{course.duration}</BodyMedium></td>
@@ -237,7 +243,7 @@ const CourseRow = ({ course, handleClick }) => {
   );
 };
 
-const Dashboard = ({ employee, achievements, completedCourses, courses, status, recentlyCourses, suggestedCourses }) => {
+const Dashboard = ({ employee, recentlyCourses, status, completedCourses, achievements, suggestedCourses, courses }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
 
@@ -245,8 +251,8 @@ const Dashboard = ({ employee, achievements, completedCourses, courses, status, 
     setWindowWidth(window.innerWidth);
   };
 
-  const handleClick = (courseId) => {
-    navigate(`/course/${courseId}`);
+  const handleClick = (id) => {
+    navigate(`/course/${id}`);
   };
 
   useEffect(() => {
@@ -276,14 +282,13 @@ const Dashboard = ({ employee, achievements, completedCourses, courses, status, 
             <Box left={false} flex={windowWidth >= 900 ? 7 : 5}>
               <div className="progress-container">
                 <ProgressSection 
-                  completed={status.completed || 0} 
-                  incomplete={status.incomplete || 0} 
-                  enrolled={status.enrolled || 0} 
-                  total={(status.completed || 0) + (status.incomplete || 0) + (status.enrolled || 0)} 
+                  completed={status.completed} 
+                  incomplete={status.incomplete} 
+                  enrolled={status.enrolled} 
                   windowWidth={windowWidth} 
                 />
                 {windowWidth >= 800 && (
-                  <CompletedCourses completedCourses={completedCourses} handleClick={handleClick} windowWidth={windowWidth} />
+                  <CompletedCourses courses={completedCourses} handleClick={handleClick} windowWidth={windowWidth} />
                 )}
               </div>
             </Box>
@@ -293,7 +298,7 @@ const Dashboard = ({ employee, achievements, completedCourses, courses, status, 
               <Archievements achievements={achievements} windowWidth={windowWidth} />
             </Box>
             <Box left={false} flex={5}>
-              <SuggestedCourses suggestedCourses={suggestedCourses} handleClick={handleClick} windowWidth={windowWidth} />
+              <SuggestedCourses courses={suggestedCourses} handleClick={handleClick} windowWidth={windowWidth} />
             </Box>
           </div>
         </div>
@@ -303,29 +308,25 @@ const Dashboard = ({ employee, achievements, completedCourses, courses, status, 
           </div>
         )}
       </div>
-      {courses.length > 0 && (
-        <>
-          <TitleLarge>My Courses</TitleLarge>
-          <table>
-            <thead>
-              <tr>
-                <th><TitleSmall>Assign by</TitleSmall></th>
-                <th><TitleSmall>Enroll Date</TitleSmall></th>
-                <th><TitleSmall>Course Name</TitleSmall></th>
-                <th><TitleSmall>Start Date</TitleSmall></th>
-                <th><TitleSmall>End Date</TitleSmall></th>
-                <th><TitleSmall>Duration</TitleSmall></th>
-                <th><TitleSmall>Status</TitleSmall></th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.map((course, index) => (
-                <CourseRow key={index} course={course} handleClick={handleClick} />
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
+      <TitleLarge>My Courses</TitleLarge>
+      <table>
+        <thead>
+          <tr>
+            <th><TitleSmall>Assign by</TitleSmall></th>
+            <th><TitleSmall>Enroll Date</TitleSmall></th>
+            <th><TitleSmall>Course Name</TitleSmall></th>
+            <th><TitleSmall>Start Date</TitleSmall></th>
+            <th><TitleSmall>End Date</TitleSmall></th>
+            <th><TitleSmall>Duration</TitleSmall></th>
+            <th><TitleSmall>Status</TitleSmall></th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.map((course, index) => (
+            <CourseRow key={index} course={course} handleClick={handleClick} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
