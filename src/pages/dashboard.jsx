@@ -2,24 +2,17 @@ import React, { useEffect, useState } from 'react';
 import Dashboard from '../components/dashboard'; 
 
 const DashboardPage = () => {
-  const recentlyCourses = [
-    { id: 1, name: 'JavaScript Fundamentals', status: 'Completed' },
-    { id: 2, name: 'React Basics', status: 'In Progress' },
-    { id: 3, name: 'Advanced CSS Techniques', status: 'Not Started' },
-    { id: 4, name: 'Node.js for Beginners', status: 'Completed' },
-  ];
-  
-  const completedCourses = [
-    { courseId: 1, name: 'JavaScript Fundamentals', description: 'A comprehensive course on JavaScript covering all the basics.' },
-    { courseId: 3, name: 'HTML & CSS for Beginners', description: 'Learn the fundamentals of web development with HTML and CSS.' },
-    { courseId: 4, name: 'Node.js Basics', description: 'Introduction to server-side development using Node.js.' },
-    { courseId: 1, name: 'JavaScript Fundamentals', description: 'A comprehensive course on JavaScript covering all the basics.' },
-    { courseId: 3, name: 'HTML & CSS for Beginners', description: 'Learn the fundamentals of web development with HTML and CSS.' },
-    { courseId: 4, name: 'Node.js Basics', description: 'Introduction to server-side development using Node.js.' },
-    { courseId: 1, name: 'JavaScript Fundamentals', description: 'A comprehensive course on JavaScript covering all the basics.' },
-    { courseId: 3, name: 'HTML & CSS for Beginners', description: 'Learn the fundamentals of web development with HTML and CSS.' },
-    { courseId: 4, name: 'Node.js Basics', description: 'Introduction to server-side development using Node.js.' },
-  ];
+  // const completedCourses = [
+  //   { courseId: 1, name: 'JavaScript Fundamentals', description: 'A comprehensive course on JavaScript covering all the basics.' },
+  //   { courseId: 3, name: 'HTML & CSS for Beginners', description: 'Learn the fundamentals of web development with HTML and CSS.' },
+  //   { courseId: 4, name: 'Node.js Basics', description: 'Introduction to server-side development using Node.js.' },
+  //   { courseId: 1, name: 'JavaScript Fundamentals', description: 'A comprehensive course on JavaScript covering all the basics.' },
+  //   { courseId: 3, name: 'HTML & CSS for Beginners', description: 'Learn the fundamentals of web development with HTML and CSS.' },
+  //   { courseId: 4, name: 'Node.js Basics', description: 'Introduction to server-side development using Node.js.' },
+  //   { courseId: 1, name: 'JavaScript Fundamentals', description: 'A comprehensive course on JavaScript covering all the basics.' },
+  //   { courseId: 3, name: 'HTML & CSS for Beginners', description: 'Learn the fundamentals of web development with HTML and CSS.' },
+  //   { courseId: 4, name: 'Node.js Basics', description: 'Introduction to server-side development using Node.js.' },
+  // ];
   
   // const status = {
   //   completed: 16,
@@ -35,16 +28,16 @@ const DashboardPage = () => {
   // ];
 
   const [employee, setEmployee] = useState({});
-  const [achievements, setAchievements] = useState([]);
-  // const [recentlyCourses, setRecentlyCourses] = useState([]);
-  // const [completedCourses, setCompletedCourses] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [recentlyCourses, setRecentlyCourses] = useState([]);
   const [statusCount, setStatusCount] = useState({
     'completed': 0,
     'in-progress': 0,
     'enrolled': 0,
   });
+  const [completedCourses, setCompletedCourses] = useState([]);
+  const [achievements, setAchievements] = useState([]);
   const [suggestedCourses, setSuggestedCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/employees?id=1')
@@ -65,7 +58,16 @@ const DashboardPage = () => {
         console.error('Error fetching achievements data:', error);
       });
 
-      fetch('http://localhost:5000/api/enrolled-courses?id=1')
+    fetch('http://localhost:5000/api/recent-courses?id=1')
+      .then(response => response.json())
+      .then(data => {
+        setRecentlyCourses(data);
+      })
+      .catch(error => {
+        console.error('Error fetching courses data:', error);
+      });
+
+    fetch('http://localhost:5000/api/enrolled-courses?id=1')
       .then(response => response.json())
       .then(data => {
         setCourses(data);

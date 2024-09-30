@@ -32,7 +32,7 @@ const CourseRecently = ({ courses, handleClick }) => {
   return (
     <div className={courses.length > 0 ? 'course-grid has-courses' : 'course-grid'}>
       {courses.slice(0, 4).map((course, index) => (
-        <div key={index} className='course-widget' onClick={() => handleClick(course.courseId)}>
+        <div key={index} className='course-widget' onClick={() => handleClick(course.id)}>
           <BodySmall>{getInitials(course.name)}</BodySmall>
         </div>
       ))}
@@ -227,7 +227,7 @@ const CourseRow = ({ course, handleClick }) => {
   return (
     <tr onClick={() => handleClick(course.course_id)}>
       <td data-label="Assign By:"><BodyMedium>{course.assign_by}</BodyMedium></td>
-      <td data-label="Date:"><BodyMedium>{new Date(course.date).toLocaleDateString()}</BodyMedium></td>
+      <td data-label="Enroll Date:"><BodyMedium>{new Date(course.enrollment_date).toLocaleDateString()}</BodyMedium></td>
       <td data-label="Course Name:"><BodyMedium>{course.course_name}</BodyMedium></td>
       <td data-label="Start Date:"><BodyMedium>{new Date(course.date_start).toLocaleDateString()}</BodyMedium></td>
       <td data-label="End Date:"><BodyMedium>{new Date(course.date_end).toLocaleDateString()}</BodyMedium></td>
@@ -310,7 +310,7 @@ const Dashboard = ({ employee, achievements, completedCourses, courses, status, 
             <thead>
               <tr>
                 <th><TitleSmall>Assign by</TitleSmall></th>
-                <th><TitleSmall>Date</TitleSmall></th>
+                <th><TitleSmall>Enroll Date</TitleSmall></th>
                 <th><TitleSmall>Course Name</TitleSmall></th>
                 <th><TitleSmall>Start Date</TitleSmall></th>
                 <th><TitleSmall>End Date</TitleSmall></th>

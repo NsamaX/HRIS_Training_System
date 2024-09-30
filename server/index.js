@@ -42,7 +42,8 @@ app.get('/api/employees', (req, res) => {
     LEFT JOIN 
       departments d ON e.department_id = d.department_id 
     WHERE 
-      e.employee_id = ?`;
+      e.employee_id = ?
+  `;
 
   db.query(query, [id], (error, results) => {
     if (error) {
@@ -52,6 +53,45 @@ app.get('/api/employees', (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
     res.json(results[0]);
+  });
+});
+
+app.get('/api/recent-courses', (req, res) => {
+  const id = req.query.id;
+  if (!id) {
+    return res.status(400).json({ error: 'User id is required' });
+  }
+
+  const query = `
+    SELECT 
+      c.course_id AS id,
+      c.name,
+      t.timestamp
+    FROM 
+      enrollments en
+    JOIN 
+      transactions t ON t.user_id = en.student_id 
+        AND JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = en.course_id
+    JOIN 
+      training_courses c ON JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = c.course_id
+    WHERE 
+      en.student_id = 1
+    ORDER BY 
+      en.enrollment_date DESC 
+    LIMIT 4;
+  `;
+
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      console.error('Database error:', error); 
+      return res.status(500).json({ error: 'Database error' });
+    }
+    
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No courses found for this user' });
+    }
+
+    res.json(results);
   });
 });
 
@@ -70,7 +110,8 @@ app.get('/api/hall-of-fame', (req, res) => {
     LEFT JOIN 
       achievements a ON h.achievement_id = a.achievement_id 
     WHERE 
-      h.employee_id = ?`;
+      h.employee_id = ?
+  `;
 
   db.query(query, [id], (error, results) => {
     if (error) {
@@ -78,36 +119,6 @@ app.get('/api/hall-of-fame', (req, res) => {
     }
     if (results.length === 0) {
       return res.status(404).json({ message: 'Hall of Fame not found for this employee' });
-    }
-    res.json(results);
-  });
-});
-
-app.get('/api/courses', (req, res) => {
-  const courseId = req.query.id;
-  
-  let query = `
-    SELECT 
-      c.course_id, 
-      c.name AS name, 
-      c.description, 
-      c.date_start, 
-      c.date_end, 
-      c.duration, 
-      g.name AS group_name 
-    FROM 
-      training_courses c 
-    LEFT JOIN 
-      training_groups g ON c.course_group_id = g.group_id
-  `;
-  
-  if (courseId) {
-    query += ` WHERE c.course_id = ?`;
-  }
-  
-  db.query(query, courseId ? [courseId] : [], (error, results) => {
-    if (error) {
-      return res.status(500).json({ error: 'Database error' });
     }
     res.json(results);
   });
@@ -121,7 +132,7 @@ app.get('/api/enrolled-courses', (req, res) => {
   
   const query = `
     SELECT 
-      en.course_id,
+      en.course_id AS id,
       (SELECT 
           CONCAT(e2.first_name, ' ', e2.last_name) 
         FROM 
@@ -151,6 +162,36 @@ app.get('/api/enrolled-courses', (req, res) => {
     }
     if (results.length === 0) {
       return res.status(404).json({ message: 'No courses found for this employee' });
+    }
+    res.json(results);
+  });
+});
+
+app.get('/api/courses', (req, res) => {
+  const courseId = req.query.id;
+  
+  let query = `
+    SELECT 
+      c.course_id AS id, 
+      c.name AS name, 
+      c.description, 
+      c.date_start, 
+      c.date_end, 
+      c.duration, 
+      g.name AS group_name 
+    FROM 
+      training_courses c 
+    LEFT JOIN 
+      training_groups g ON c.course_group_id = g.group_id
+  `;
+  
+  if (courseId) {
+    query += ` WHERE c.course_id = ?`;
+  }
+  
+  db.query(query, courseId ? [courseId] : [], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Database error' });
     }
     res.json(results);
   });
