@@ -34,31 +34,35 @@ VALUES
 INSERT INTO positions (name, description)
 VALUES
 (
-    'Software Developer', 
-    'Develops and maintains software applications'
+    'Project Manager', 
+    'Oversees project execution and team coordination'
 ),
 (
     'HR Manager', 
     'Manages human resources and employee relations'
 ),
 (
-    'Project Manager', 
-    'Oversees project execution and team coordination'
+    'Software Developer', 
+    'Develops and maintains software applications'
+),
+(
+    'Data Analyst', 
+    'Analyzes and interprets complex data to assist in decision-making'
 );
 
 INSERT INTO departments (name, description)
 VALUES
 (
-    'IT Department', 
-    'Handles all tech-related tasks and support'
+    'Project Management Office', 
+    'Oversees project execution, team coordination, and ensures project delivery on time'
 ),
 (
     'Human Resources', 
-    'Manages employee recruitment and welfare'
+    'Manages employee recruitment, employee relations, and welfare'
 ),
 (
-    'Sales Department', 
-    'Responsible for sales and customer relationships'
+    'IT Department', 
+    'Handles all tech-related tasks, software development, data analysis, and support'
 );
 
 INSERT INTO employees (first_name, last_name, email, role_id, position_id, department_id, date_joined, status)
@@ -98,7 +102,7 @@ VALUES
     'Williams', 
     'bob.williams@example.com', 
     3, 
-    3, 
+    4, 
     3, 
     '2021-09-05', 
     'terminated'
@@ -140,6 +144,14 @@ VALUES
 (
     'Communication Skills', 
     'Courses to enhance communication in the workplace'
+),
+(
+    'Time Management', 
+    'Courses designed to improve efficiency and productivity through effective time management'
+),
+(
+    'Project Management', 
+    'Courses that cover project planning, execution, and delivery techniques'
 );
 
 INSERT INTO training_courses (course_group_id, name, description, instructor_id, date_start, date_end, duration, status, rating)
@@ -165,15 +177,14 @@ VALUES
     10, 
     'ongoing',
     '{
-        "score": 4.5,
+        "score": 4.39,
         "star": {
-            "5": 0.6,
-            "4": 0.25,
-            "3": 0.1,
-            "2": 0.04,
-            "1": 0.01
-        },
-        "vote": 0
+            "5": 60,
+            "4": 25,
+            "3": 10,
+            "2": 4,
+            "1": 1
+        }
     }'
 ),
 (
@@ -186,37 +197,63 @@ VALUES
     5, 
     'planned',
     null
+),
+(
+    1, 
+    'Team Leadership Essentials', 
+    'Focus on building effective team leadership skills', 
+    1, 
+    '2024-04-01', 
+    '2024-04-05', 
+    5, 
+    'planned',
+    null
+),
+(
+    2, 
+    'Data Analysis with Python', 
+    'Learn data analysis techniques using Python programming', 
+    3, 
+    '2024-05-01', 
+    '2024-05-15', 
+    15, 
+    'planned',
+    null
 );
 
-INSERT INTO enrollments (course_id, user_enrolled_id, student_id, enrollment_date, status)
+INSERT INTO enrollments (course_id, user_enrolled_id, student_id, enrollment_date, status, rating)
 VALUES
 (
     1, 
     1,
     1, 
     '2024-01-05', 
-    'completed'
+    'completed',
+    5
 ),
 (
     2, 
     1,
     2, 
     '2024-01-30', 
-    'in-progress'
+    'in-progress',
+    null
 ),
 (
     3, 
     2,
     3, 
     '2024-02-25', 
-    'enrolled'
+    'enrolled',
+    null
 ),
 (
     3, 
     2,
     4, 
     '2024-02-25', 
-    'enrolled'
+    'enrolled',
+    null
 );
 
 INSERT INTO action_types (name, description)
@@ -236,14 +273,19 @@ VALUES
 (
     'Training Enrollment', 
     'User enrolled in a training course'
+),
+(
+    'Recent Courses', 
+    'Report on the most recently completed courses by employees'
 );
 
-INSERT INTO transactions (action_type_id, user_id, timestamp)
+INSERT INTO transactions (action_type_id, user_id, description, timestamp)
 VALUES
-(1, 1, '2024-01-10 08:30:00'),
-(2, 1, '2024-01-10 17:00:00'),
-(3, 2, '2024-01-15 10:45:00'),
-(4, 3, '2024-02-01 09:00:00');
+(1, 1, NULL, '2024-01-10 08:30:00'),
+(2, 1, NULL, '2024-01-10 17:00:00'),
+(3, 2, NULL, '2024-01-15 10:45:00'),
+(4, 3, NULL, '2024-02-01 09:00:00'),
+(5, 1, '{"course": 1}', '2024-02-01 10:23:00');
 
 INSERT INTO report_types (name, description)
 VALUES

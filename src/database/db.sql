@@ -1,6 +1,6 @@
--- DROP DATABASE hris_training_system;
--- CREATE DATABASE hris_training_system;
--- USE hris_training_system;
+DROP DATABASE hris_training_system;
+CREATE DATABASE hris_training_system;
+USE hris_training_system;
 
 CREATE TABLE roles (
   role_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -70,7 +70,8 @@ CREATE TABLE enrollments (
     user_enrolled_id INT NOT NULL,
     student_id INT NOT NULL,
     enrollment_date DATE NOT NULL,
-    status ENUM('enrolled', 'in-progress', 'completed', 'failed') NOT NULL,
+    status ENUM('enrolled', 'in-progress', 'in-complete', 'completed', 'failed') NOT NULL,
+    rating TINYINT,
     FOREIGN KEY (course_id) REFERENCES training_courses(course_id),
     FOREIGN KEY (student_id) REFERENCES employees(employee_id)
 );
@@ -83,8 +84,9 @@ CREATE TABLE action_types (
 
 CREATE TABLE transactions (
     transaction_id INT PRIMARY KEY AUTO_INCREMENT,
-    action_type_id INT NOT NULL,
     user_id INT NOT NULL,
+    action_type_id INT NOT NULL,
+    description TEXT,
     timestamp DATETIME NOT NULL,
     FOREIGN KEY (action_type_id) REFERENCES action_types(action_type_id),
     FOREIGN KEY (user_id) REFERENCES employees(employee_id)

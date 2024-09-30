@@ -11,11 +11,21 @@ const Box = ({ left, flex, children }) => (
   </div>
 );
 
-const getInitials = (courseName) => {
-  return courseName
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase())
-    .join('');
+const UserInfoBox = ({ employee }) => {
+  const hasName = employee.first_name && employee.last_name;
+
+  return (
+    <div className="user-info-box">
+      <div className="user-icon"></div>
+      <div className="user-info-text">
+        <TitleMedium>Name: {`${employee.first_name || ''} ${employee.last_name || ''}`}</TitleMedium>
+        <BodyMedium>Email: {employee.email}</BodyMedium>
+        <BodyMedium>Position: {employee.position}</BodyMedium>
+        <BodyMedium>Department: {employee.department}</BodyMedium>
+        <BodyMedium>Start Date: {hasName ? new Date(employee.date_joined).toLocaleDateString() : ''}</BodyMedium>
+      </div>
+    </div>
+  );
 };
 
 const CourseRecently = ({ courses, handleClick }) => {
@@ -28,6 +38,13 @@ const CourseRecently = ({ courses, handleClick }) => {
       ))}
     </div>
   );
+};
+
+const getInitials = (courseName) => {
+  return courseName
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase())
+    .join('');
 };
 
 const ProgressSection = ({ completed, incomplete, enrolled, total, windowWidth }) => {
@@ -206,29 +223,14 @@ const SuggestedCourseRow = ({ rating, courseName, description, courseId, handleC
   );
 };
 
-const UserInfoBox = ({ employee }) => {
-  return (
-    <div className="user-info-box">
-      <div className="user-icon"></div>
-      <div className="user-info-text">
-        <TitleMedium>Name: {`${employee.first_name} ${employee.last_name}`}</TitleMedium>
-        <BodyMedium>Email: {employee.email}</BodyMedium>
-        <BodyMedium>Position: {employee.position}</BodyMedium>
-        <BodyMedium>Department: {employee.department}</BodyMedium>
-        <BodyMedium>Start Date: {new Date(employee.date_joined).toLocaleDateString()}</BodyMedium>
-      </div>
-    </div>
-  );
-};
-
 const CourseRow = ({ course, handleClick }) => {
   return (
-    <tr onClick={() => handleClick(course.courseId)}>
-      <td data-label="Assign By:"><BodyMedium>{course.assignBy}</BodyMedium></td>
-      <td data-label="Date:"><BodyMedium>{course.date}</BodyMedium></td>
-      <td data-label="Course Name:"><BodyMedium>{course.courseName}</BodyMedium></td>
-      <td data-label="Platform:"><BodyMedium>{course.platform}</BodyMedium></td>
-      <td data-label="Start Date:"><BodyMedium>{course.startDate}</BodyMedium></td>
+    <tr onClick={() => handleClick(course.course_id)}>
+      <td data-label="Assign By:"><BodyMedium>{course.assign_by}</BodyMedium></td>
+      <td data-label="Date:"><BodyMedium>{new Date(course.date).toLocaleDateString()}</BodyMedium></td>
+      <td data-label="Course Name:"><BodyMedium>{course.course_name}</BodyMedium></td>
+      <td data-label="Start Date:"><BodyMedium>{new Date(course.date_start).toLocaleDateString()}</BodyMedium></td>
+      <td data-label="End Date:"><BodyMedium>{new Date(course.date_end).toLocaleDateString()}</BodyMedium></td>
       <td data-label="Duration:"><BodyMedium>{course.duration}</BodyMedium></td>
       <td data-label="Status:"><BodyMedium>{course.status}</BodyMedium></td>
     </tr>
@@ -273,7 +275,13 @@ const Dashboard = ({ employee, achievements, completedCourses, courses, status, 
             </Box>
             <Box left={false} flex={windowWidth >= 900 ? 7 : 5}>
               <div className="progress-container">
-                <ProgressSection completed={status.completed} incomplete={status.incomplete} enrolled={status.enrolled} total={status.completed + status.incomplete + status.enrolled} windowWidth={windowWidth} />
+                <ProgressSection 
+                  completed={status.completed || 0} 
+                  incomplete={status.incomplete || 0} 
+                  enrolled={status.enrolled || 0} 
+                  total={(status.completed || 0) + (status.incomplete || 0) + (status.enrolled || 0)} 
+                  windowWidth={windowWidth} 
+                />
                 {windowWidth >= 800 && (
                   <CompletedCourses completedCourses={completedCourses} handleClick={handleClick} windowWidth={windowWidth} />
                 )}
@@ -295,25 +303,29 @@ const Dashboard = ({ employee, achievements, completedCourses, courses, status, 
           </div>
         )}
       </div>
-      <TitleLarge>My Courses</TitleLarge>
-      <table>
-        <thead>
-          <tr>
-            <th><TitleSmall>Assign by</TitleSmall></th>
-            <th><TitleSmall>Date</TitleSmall></th>
-            <th><TitleSmall>Course Name</TitleSmall></th>
-            <th><TitleSmall>Platform</TitleSmall></th>
-            <th><TitleSmall>Start Date</TitleSmall></th>
-            <th><TitleSmall>Duration</TitleSmall></th>
-            <th><TitleSmall>Status</TitleSmall></th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses.map((course, index) => (
-            <CourseRow key={index} course={course} handleClick={handleClick} />
-          ))}
-        </tbody>
-      </table>
+      {courses.length > 0 && (
+        <>
+          <TitleLarge>My Courses</TitleLarge>
+          <table>
+            <thead>
+              <tr>
+                <th><TitleSmall>Assign by</TitleSmall></th>
+                <th><TitleSmall>Date</TitleSmall></th>
+                <th><TitleSmall>Course Name</TitleSmall></th>
+                <th><TitleSmall>Start Date</TitleSmall></th>
+                <th><TitleSmall>End Date</TitleSmall></th>
+                <th><TitleSmall>Duration</TitleSmall></th>
+                <th><TitleSmall>Status</TitleSmall></th>
+              </tr>
+            </thead>
+            <tbody>
+              {courses.map((course, index) => (
+                <CourseRow key={index} course={course} handleClick={handleClick} />
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 };

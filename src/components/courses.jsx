@@ -9,21 +9,13 @@ const Header = ({ filterOptions }) => {
   return (
     <header>
       <div className="header">
-        <TitleLarge className="header-title">
-          Empower Your Journey
-        </TitleLarge>
+        <TitleLarge className="header-title">Empower Your Journey</TitleLarge>
         <div>
-          <BodyLarge className="header-subtitle">
-            Explore courses designed to elevate your skills and enhance your career. Start learning today, and achieve your goals.
-          </BodyLarge>
+          <BodyLarge className="header-subtitle">Explore courses designed to elevate your skills and enhance your career. Start learning today, and achieve your goals.</BodyLarge>
         </div>
         <div className="search-box">
-          <BodyMedium>
-            Search courses...
-          </BodyMedium>
-          <IconButton>
-            <SearchIcon />
-          </IconButton>
+          <BodyMedium>Search courses...</BodyMedium>
+          <IconButton><SearchIcon /></IconButton>
         </div>
       </div>
       <div className='separator'>
@@ -36,9 +28,7 @@ const Header = ({ filterOptions }) => {
 const Separator = ({ filterOptions }) => {
   const buildFilterButton = (filter) => (
     <Button variant="outlined" className="filter-button" key={filter}>
-      <BodyMedium>
-        {filter}
-      </BodyMedium>
+      <BodyMedium>{filter}</BodyMedium>
     </Button>
   );
 
@@ -70,9 +60,7 @@ const FilterButton = ({ filter, selectedFilters, setSelectedFilters, filterOptio
           IconComponent={() => <span className="filter-icon">▼</span>}
         >
           {filterOptions[filter]?.map((value) => (
-            <MenuItem key={value} value={value}>
-              {value}
-            </MenuItem>
+            <MenuItem key={value} value={value}>{value}</MenuItem>
           ))}
           <MenuItem value="Cancel">Cancel</MenuItem>
         </Select>
@@ -136,19 +124,6 @@ const CourseBox = ({ course }) => {
   );
 };
 
-const InfoSection = ({ title, info }) => {
-  return (
-    <section className="info-section title">
-      <TitleMedium>{title}</TitleMedium>
-      {Object.entries(info).map(([key, value]) => (
-        <BodyMedium key={key}>
-          {`${key}: ${value}`}
-        </BodyMedium>
-      ))}
-    </section>
-  );
-};
-
 const ContactSection = ({ contactSections }) => {
   return (
     <footer className="contact-section">
@@ -161,10 +136,19 @@ const ContactSection = ({ contactSections }) => {
           ))}
         </div>
       </div>
-      <BodySmall className="footer-text">
-        © 2024 Training Company Ltd. All rights reserved.
-      </BodySmall>
+      <BodySmall className="footer-text">© 2024 Training Company Ltd. All rights reserved.</BodySmall>
     </footer>
+  );
+};
+
+const InfoSection = ({ title, info }) => {
+  return (
+    <section className="info-section title">
+      <TitleMedium>{title}</TitleMedium>
+      {Object.entries(info).map(([key, value]) => (
+        <BodyMedium key={key}>{`${key}: ${value}`}</BodyMedium>
+      ))}
+    </section>
   );
 };
 

@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0" version="24.7.16">
   <diagram name="Page-1" id="BIeippKLaWh_f7vk-IIa">
-    <mxGraphModel dx="1056" dy="1146" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1365" dy="1433" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -420,7 +420,7 @@
             <mxRectangle width="36" height="22" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="1vJfrN8NMG1-H0iuWCPC-161" value="action_type_id" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=2;overflow=hidden;fontSize=11;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" parent="1vJfrN8NMG1-H0iuWCPC-159" vertex="1">
+        <mxCell id="1vJfrN8NMG1-H0iuWCPC-161" value="user_id" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=2;overflow=hidden;fontSize=11;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" parent="1vJfrN8NMG1-H0iuWCPC-159" vertex="1">
           <mxGeometry x="36" width="104" height="22" as="geometry">
             <mxRectangle width="104" height="22" as="alternateBounds" />
           </mxGeometry>
@@ -433,7 +433,7 @@
             <mxRectangle width="36" height="22" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="1vJfrN8NMG1-H0iuWCPC-164" value="user_id" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=2;overflow=hidden;fontSize=11;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" parent="1vJfrN8NMG1-H0iuWCPC-162" vertex="1">
+        <mxCell id="1vJfrN8NMG1-H0iuWCPC-164" value="action_type_id" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=2;overflow=hidden;fontSize=11;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" parent="1vJfrN8NMG1-H0iuWCPC-162" vertex="1">
           <mxGeometry x="36" width="104" height="22" as="geometry">
             <mxRectangle width="104" height="22" as="alternateBounds" />
           </mxGeometry>
@@ -827,7 +827,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="Zawj2BkCgVLtLaC1ZrmA-4" value="Enrollments" style="shape=table;startSize=25;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=1;fontStyle=1;align=center;resizeLast=1;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="560" y="393" width="140" height="157" as="geometry" />
+          <mxGeometry x="560" y="393" width="140" height="179" as="geometry" />
         </mxCell>
         <mxCell id="Zawj2BkCgVLtLaC1ZrmA-5" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" parent="Zawj2BkCgVLtLaC1ZrmA-4" vertex="1">
           <mxGeometry y="25" width="140" height="22" as="geometry" />
@@ -903,6 +903,19 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="Zawj2BkCgVLtLaC1ZrmA-22" value="status" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=2;overflow=hidden;fontSize=11;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" parent="Zawj2BkCgVLtLaC1ZrmA-20" vertex="1">
+          <mxGeometry x="36" width="104" height="22" as="geometry">
+            <mxRectangle width="104" height="22" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OvRcTOHfqraV2TkSM5M1-1" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" vertex="1" parent="Zawj2BkCgVLtLaC1ZrmA-4">
+          <mxGeometry y="157" width="140" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="OvRcTOHfqraV2TkSM5M1-2" value="tinyint" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=2;overflow=hidden;fontSize=11;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" vertex="1" parent="OvRcTOHfqraV2TkSM5M1-1">
+          <mxGeometry width="36" height="22" as="geometry">
+            <mxRectangle width="36" height="22" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OvRcTOHfqraV2TkSM5M1-3" value="rating" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=2;overflow=hidden;fontSize=11;hachureGap=4;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;labelBackgroundColor=none;rounded=0;" vertex="1" parent="OvRcTOHfqraV2TkSM5M1-1">
           <mxGeometry x="36" width="104" height="22" as="geometry">
             <mxRectangle width="104" height="22" as="alternateBounds" />
           </mxGeometry>

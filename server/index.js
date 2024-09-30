@@ -6,7 +6,6 @@ app.use(cors());
 app.use(express.json());
 
 const mysql = require('mysql');
-const { Security } = require('@mui/icons-material');
 require('dotenv').config();
 
 const db = mysql.createConnection({
@@ -22,8 +21,12 @@ db.connect((err) => {
   console.log('Connected to MySQL database');
 });
 
-app.get('/api/employees/:id', (req, res) => {
-  const id = req.params.id; 
+app.get('/api/employees', (req, res) => {
+  const id = req.query.id;
+  if (!id) {
+    return res.status(400).json({ error: 'Employee id is required' });
+  }
+  
   const query = `
     SELECT 
       e.first_name,
@@ -52,8 +55,12 @@ app.get('/api/employees/:id', (req, res) => {
   });
 });
 
-app.get('/api/hall-of-fame/:id', (req, res) => {
-  const id = req.params.id; 
+app.get('/api/hall-of-fame', (req, res) => {
+  const id = req.query.id;
+  if (!id) {
+    return res.status(400).json({ error: 'Employee id is required' });
+  }
+
   const query = `
     SELECT 
       a.name, 
@@ -106,6 +113,48 @@ app.get('/api/courses', (req, res) => {
   });
 });
 
+app.get('/api/enrolled-courses', (req, res) => {
+  const id = req.query.id;
+  if (!id) {
+    return res.status(400).json({ error: 'Employee id is required' });
+  }
+  
+  const query = `
+    SELECT 
+      en.course_id,
+      (SELECT 
+          CONCAT(e2.first_name, ' ', e2.last_name) 
+        FROM 
+          employees e2 
+        WHERE 
+          e2.employee_id = en.user_enrolled_id
+      ) AS 'assign_by',
+      en.enrollment_date,
+      t.name AS course_name,
+      t.date_start,
+      t.date_end,
+      t.duration,
+      t.status
+    FROM 
+      enrollments en 
+    JOIN 
+      employees e ON en.student_id = e.employee_id 
+    JOIN 
+      training_courses t ON en.course_id = t.course_id 
+    WHERE 
+      en.enrollment_id = ?
+  `;
+
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: 'Database error' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No courses found for this employee' });
+    }
+    res.json(results);
+  });
+});
 
 app.listen(5000, () => {
   console.log('Server started on port 5000');

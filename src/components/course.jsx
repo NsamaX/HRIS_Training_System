@@ -20,9 +20,7 @@ const CourseDescription = ({ courseData }) => {
         Status: {courseData.status}
         <br />
         {courseData.status !== 'Not enrolled' && (
-          <>
-            Meeting ID: <span className="meeting-id">{courseData.meetingID}</span>
-          </>
+          <>Meeting ID: <span className="meeting-id">{courseData.meetingID}</span></>
         )}
         </BodyMedium>
     </div>
