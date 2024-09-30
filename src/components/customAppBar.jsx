@@ -5,23 +5,21 @@ import { CalendarMonthRounded, MenuBookRounded, NotificationsNoneRounded, MailOu
 import '../styles/customAppBar.css';
 
 const CustomAppBar = ({ selectedPage }) => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const navItemsLeft = [
-    { text: 'Dashboard', icon: <CalendarMonthRounded />, index: 0, path: '/dashboard' },
-    { text: 'Courses', icon: <MenuBookRounded />, index: 1, path: '/courses' },
+    { text: 'Dashboard', icon: <CalendarMonthRounded />, path: '/dashboard' },
+    { text: 'Courses', icon: <MenuBookRounded />, path: '/courses' },
   ];
 
   const navItemsRight = [
-    { text: 'Notification', icon: <NotificationsNoneRounded />, index: -1 },
-    { text: 'example@gmail.com', icon: <MailOutlineRounded />, index: -1 },
-    { text: 'Signout', icon: <LogoutRounded />, index: -1 },
+    { text: 'Notification', icon: <NotificationsNoneRounded /> },
+    { text: 'example@gmail.com', icon: <MailOutlineRounded /> },
+    { text: 'Signout', icon: <LogoutRounded />, action: () => handleSignout() },
   ];
 
   const handleNavigation = (path) => {
-    if (path) {
-      navigate(path);
-    }
+    if (path) navigate(path);
   };
 
   const handleSignout = () => {
@@ -29,34 +27,34 @@ const CustomAppBar = ({ selectedPage }) => {
     navigate('/signin');
   };
 
+  const renderNavButton = ({ text, icon, path }, index) => (
+    <Button
+      key={index}
+      color={selectedPage === index ? 'inherit' : 'secondary'}
+      onClick={() => handleNavigation(path)}
+      startIcon={icon}
+      className={`nav-button ${selectedPage === index ? 'active' : ''}`}
+    >
+      {text}
+    </Button>
+  );
+
+  const renderIconButton = ({ text, icon, action }, index) => (
+    <Tooltip key={index} title={text}>
+      <IconButton className="icon-button" color="inherit" onClick={action || null}>
+        {icon}
+      </IconButton>
+    </Tooltip>
+  );
+
   return (
     <AppBar position="static" color="primary">
       <Toolbar>
         <div className="toolbar-container">
-          {navItemsLeft.map((item, idx) => (
-            <Button
-              key={idx}
-              color={selectedPage === item.index ? 'inherit' : 'secondary'}
-              onClick={() => handleNavigation(item.path)}
-              startIcon={item.icon}
-              className={`nav-button ${selectedPage === item.index ? 'active' : ''}`} 
-            >
-              {item.text}
-            </Button>
-          ))}
+          {navItemsLeft.map(renderNavButton)}
         </div>
         <div>
-          {navItemsRight.map((item, idx) => (
-            <Tooltip key={idx} title={item.text}>
-              <IconButton
-                className="icon-button" 
-                color="inherit"
-                onClick={item.text === 'Signout' ? handleSignout : null}
-              >
-                {item.icon}
-              </IconButton>
-            </Tooltip>
-          ))}
+          {navItemsRight.map(renderIconButton)}
         </div>
       </Toolbar>
     </AppBar>
