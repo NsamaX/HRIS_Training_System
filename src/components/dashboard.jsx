@@ -48,7 +48,6 @@ const getInitials = (name) => {
 };
 
 const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
-  console.log(completed, incomplete, enrolled);
   const total = completed + incomplete + enrolled;
   const percentages = {
     completed: (completed / total) * 100,
@@ -282,9 +281,9 @@ const Dashboard = ({ employee, recentlyCourses, status, completedCourses, achiev
             <Box left={false} flex={windowWidth >= 900 ? 7 : 5}>
               <div className="progress-container">
                 <ProgressSection 
-                  completed={status.completed} 
-                  incomplete={status.incomplete} 
-                  enrolled={status.enrolled} 
+                  completed={status.completed || 0} 
+                  incomplete={status.incomplete || 0} 
+                  enrolled={status.enrolled || 0} 
                   windowWidth={windowWidth} 
                 />
                 {windowWidth >= 800 && (
