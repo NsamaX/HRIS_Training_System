@@ -184,9 +184,10 @@ app.get('/api/courses', async (req, res) => {
   const { id } = req.query;
 
   const query = `
-    SELECT c.course_id AS id, c.name AS name, c.description, c.date_start, c.date_end, c.duration, g.name AS group_name 
+    SELECT c.course_id AS id, c.name AS name, c.description, c.platform, CONCAT(e.first_name, " ", e.last_name) AS instructor, c.date_start, c.date_end, c.duration, g.name AS group_name 
     FROM training_courses c 
     LEFT JOIN training_groups g ON c.course_group_id = g.group_id
+    LEFT JOIN employees e ON c.instructor_id = e.employee_id
     ${id ? 'WHERE c.course_id = ?' : ''}
   `;
 

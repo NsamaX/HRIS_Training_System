@@ -54,6 +54,7 @@ CREATE TABLE training_courses (
     course_group_id INT,
     name VARCHAR(255) NOT NULL,
     description TEXT,
+    platform VARCHAR(255),
     instructor_id INT,
     date_start DATE NOT NULL,
     date_end DATE NOT NULL,

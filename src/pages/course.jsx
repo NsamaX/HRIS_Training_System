@@ -2,46 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Course from '../components/course';
 
-const fetchCourseData = async (id) => {
-  const response = await fetch(`http://localhost:5000/api/courses?id=${id}`);
-  if (!response.ok) throw new Error('Failed to fetch course data');
-  return response.json();
-};
-
 const CoursesPage = () => {
+  const [course, setCourse] = useState(null);
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const id = queryParams.get('id');
-  const [courseData, setCourseData] = useState(null);
-  const [error, setError] = useState(null);
-  const [star, setStar] = useState(0);
+
+  const getCourseIdFromUrl = () => {
+    const searchParams = new URLSearchParams(location.search);
+    return searchParams.get('id');
+  };
 
   useEffect(() => {
-    const loadCourseData = async () => {
-      try {
-        const data = await fetchCourseData(id);
-        setCourseData(data);
-        setStar(0);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    loadCourseData();
-  }, [id]);
+    const courseId = getCourseIdFromUrl();
+    
+    if (courseId) { 
+      fetch(`http://localhost:5000/api/courses?id=${courseId}`)
+        .then(response => response.json())
+        .then(data => setCourse(data))
+        .catch(error => console.error('Error fetching course data:', error));
+    }
+  }, [location]);
 
-  const handleRatingSelected = (selectedStars) => setStar(selectedStars === star ? 0 : selectedStars);
-
-  if (error) return <div>Error: {error}</div>;
-  if (!courseData) return <div>Loading...</div>;
+  const handleRatingSelected = (rating) => {
+    console.log('Selected rating:', rating);
+  };
 
   return (
-    // <Course 
-    //   courseData={courseData}
-    //   star={star}
-    //   ratingMap={courseData?.rating.star}
-    //   onRatingSelected={handleRatingSelected}
-    // />
-    null
+    course ? (
+      <Course 
+        course={course}
+        onRatingSelected={handleRatingSelected}
+      />
+    ) : (
+      <p>Loading...</p>
+    )
   );
 };
 

@@ -154,12 +154,13 @@ VALUES
     'Courses that cover project planning, execution, and delivery techniques'
 );
 
-INSERT INTO training_courses (course_group_id, name, description, instructor_id, date_start, date_end, duration, status, rating)
+INSERT INTO training_courses (course_group_id, name, description, platform, instructor_id, date_start, date_end, duration, status, rating)
 VALUES
 (
     1, 
     'Leadership 101', 
     'Introductory course on leadership principles', 
+    'Onsite: Building Leadership',
     1, 
     '2024-01-10', 
     '2024-01-15', 
@@ -171,6 +172,7 @@ VALUES
     2, 
     'Advanced Java Programming', 
     'Deep dive into Java for advanced users', 
+    'Online: Udemy',
     1, 
     '2024-02-01', 
     '2024-02-10', 
@@ -191,6 +193,7 @@ VALUES
     2, 
     'Effective Communication', 
     'Improve communication skills in a professional setting', 
+    'Zoom: xxx xxx xxxx',
     2, 
     '2024-03-05', 
     '2024-03-10', 
@@ -202,6 +205,7 @@ VALUES
     1, 
     'Team Leadership Essentials', 
     'Focus on building effective team leadership skills', 
+    'Zoom: xxx xxx xxxx',
     1, 
     '2024-04-01', 
     '2024-04-05', 
@@ -213,6 +217,7 @@ VALUES
     2, 
     'Data Analysis with Python', 
     'Learn data analysis techniques using Python programming', 
+    'Online: Udemy',
     3, 
     '2024-05-01', 
     '2024-05-15', 
