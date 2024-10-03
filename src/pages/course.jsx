@@ -36,21 +36,25 @@ const CoursesPage = () => {
           setError('Error fetching course data');
         });
 
-      fetch(`http://localhost:5000/api/course-status?course_id=${courseId}&student_id=${1}`)
+        fetch(`http://localhost:5000/api/course-status?course_id=${courseId}&student_id=1`)
         .then(response => {
           if (!response.ok) {
-            throw new Error('Failed to fetch course status');
+            console.error('Error status:', response.status);
+            if (response.status === 404) {
+              return { status: '' };
+            }
+            return response.text().then(text => { throw new Error(text); });
           }
           return response.json();
         })
         .then(data => {
           console.log('Fetched course status:', data);
-          setCourseStatus(data.status); 
+          setCourseStatus(data.status || '');
         })
         .catch(error => {
           console.error('Error fetching course status:', error);
-          setError('Error fetching course status');
-        });
+          setCourseStatus('');
+        });      
     }
   }, [location]);
 
@@ -64,12 +68,12 @@ const CoursesPage = () => {
       {course ? (
         <Course 
           course={course}
+          status={courseStatus}
           onRatingSelected={handleRatingSelected}
         />
       ) : (
         <p>Loading...</p>
       )}
-      {courseStatus && <p>Course Status: {courseStatus}</p>} 
     </div>
   );
 };

@@ -26,62 +26,62 @@ const CourseDescription = ({ course }) => {
   );
 };
 
-// const RatingBar = ({ status, star, ratingMap, onRatingSelected }) => {
-//   return (
-//     <div className="rating-bar">
-//       <TitleMedium>Rating</TitleMedium>
-//       {Object.entries(ratingMap)
-//         .sort((a, b) => b[0] - a[0])
-//         .map(([stars, percentage]) => (
-//           <RatingRow
-//             key={stars}
-//             status={status}
-//             star={star}
-//             stars={parseInt(stars)}
-//             percentage={percentage}
-//             onClick={() => onRatingSelected(parseInt(stars))}
-//           />
-//         ))}
-//     </div>
-//   );
-// };
+const RatingBar = ({ status, star, ratingMap, onRatingSelected }) => {
+  return (
+    <div className="rating-bar">
+      <TitleMedium>Rating</TitleMedium>
+      {Object.entries(ratingMap)
+        .sort((a, b) => b[0] - a[0])
+        .map(([stars, percentage]) => (
+          <RatingRow
+            key={stars}
+            status={status}
+            star={star}
+            stars={parseInt(stars)}
+            percentage={percentage}
+            onClick={() => onRatingSelected(parseInt(stars))}
+          />
+        ))}
+    </div>
+  );
+};
 
-// const RatingRow = ({ status, star, stars, percentage, onClick }) => {
-//   return (
-//     <div className="rating-row" onClick={onClick}>
-//       <p>{stars}</p>
-//       {status === 'Graduated' && (
-//         <span>{stars > star ? '☆' : '★'}</span>
-//       )}
-//       <div className="bar-container">
-//         <div className="bar" style={{ width: `${percentage * 100}%` }} />
-//       </div>
-//     </div>
-//   );
-// };
+const RatingRow = ({ status, star, stars, percentage, onClick }) => {
+  return (
+    <div className="rating-row" onClick={onClick}>
+      <p>{stars}</p>
+      {status === 'completed' && (
+        <span>{stars > star ? '☆' : '★'}</span>
+      )}
+      <div className="bar-container">
+        <div className="bar" style={{ width: `${percentage * 100}%` }} />
+      </div>
+    </div>
+  );
+};
 
-// const ReviewAndEnrollButtons = ({ status }) => {
-//   return (
-//     <div className='title'>
-//       {status === 'Graduated' && (
-//         <>
-//           <TitleMedium>Share your thoughts</TitleMedium>
-//           <BodyMedium>Please share your ideas with others for the benefit of the organization's further development.</BodyMedium>
-//         </>
-//       )}
-//       <div className="review-buttons">
-//         {status === 'Graduated' ? (
-//           <>
-//             <ActionButton label="Write a review" />
-//             <ActionButton label="Get Certificate" />
-//           </>
-//         ) : (
-//           <ActionButton label="Enroll" />
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
+const ReviewAndEnrollButtons = ({ status }) => {
+  return (
+    <div className='title'>
+      {status === 'completed' && (
+        <>
+          <TitleMedium>Share your thoughts</TitleMedium>
+          <BodyMedium>Please share your ideas with others for the benefit of the organization's further development.</BodyMedium>
+        </>
+      )}
+      <div className="review-buttons">
+        {status === 'completed' ? (
+          <>
+            <ActionButton label="Write a review" />
+            <ActionButton label="Get Certificate" />
+          </>
+        ) : (
+          <ActionButton label="Enroll" />
+        )}
+      </div>
+    </div>
+  );
+};
 
 const ActionButton = ({ label, onClick }) => {
   return (
@@ -91,7 +91,7 @@ const ActionButton = ({ label, onClick }) => {
   );
 };
 
-const Course = ({ course, onRatingSelected }) => {
+const Course = ({ course, status, onRatingSelected }) => {
   return (
     <div className='course-content'>
       <div className='title'>
@@ -104,7 +104,7 @@ const Course = ({ course, onRatingSelected }) => {
         <div className='course-right-column'>
           <CourseDescription course={course} />
           {/* <RatingBar status={course.status} star={course.star} ratingMap={course.ratingMap} onRatingSelected={onRatingSelected} /> */}
-          {/* <ReviewAndEnrollButtons status={course.status} /> */}
+          <ReviewAndEnrollButtons status={status} />
         </div>
       </div>
     </div>

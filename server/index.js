@@ -76,7 +76,7 @@ app.get('/api/recent-courses', async (req, res) => {
 });
 
 // Get course status
-app.get('/api/course-status', async (req, res) => {
+app.get('/api/courses-status', async (req, res) => {
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'Student id is required' });
 
