@@ -28,7 +28,7 @@ const DashboardPage = () => {
     fetchData(`http://localhost:5000/api/course-status?id=${employeeId}`, setStatus);
     fetchData(`http://localhost:5000/api/completed-courses?id=${employeeId}`, setCompletedCourses);
     fetchData(`http://localhost:5000/api/hall-of-fame?id=${employeeId}`, setAchievements);
-    fetchData(`http://localhost:5000/api/suggested-courses`, setSuggestedCourses);
+    fetchData(`http://localhost:5000/api/suggested-courses?id=${employeeId}`, setSuggestedCourses);
     fetchData(`http://localhost:5000/api/enrolled-courses?id=${employeeId}`, setCourses);
   }, []);
 

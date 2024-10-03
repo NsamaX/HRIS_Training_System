@@ -82,7 +82,7 @@ const CourseList = ({ courses }) => (
 
 const CourseBox = ({ course }) => {
   const navigate = useNavigate();
-  const handleClick = () => navigate(`/course?id=${course.id}`);
+  const handleClick = () => navigate(`/course?id=${course.id}&student_id=${1}`);
 
   return (
     <article className="course-box" onClick={handleClick}>

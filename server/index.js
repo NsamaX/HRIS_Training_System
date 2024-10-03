@@ -141,18 +141,31 @@ app.get('/api/hall-of-fame', async (req, res) => {
 
 // Get suggested courses
 app.get('/api/suggested-courses', async (req, res) => {
+  const { id } = req.query;
+
+  if (!id) {
+    return res.status(400).json({ error: 'student_id is required' });
+  }
+
   const query = `
-    SELECT c.course_id AS id, c.name, c.description, JSON_EXTRACT(c.rating, '$.score') AS score
-    FROM training_courses c 
+    SELECT c.course_id AS id, 
+           c.name, 
+           c.description, 
+           COALESCE(JSON_EXTRACT(c.rating, '$.score'), '0') AS score
+    FROM training_courses c
     LEFT JOIN training_groups g ON c.course_group_id = g.group_id
-    ORDER BY score DESC
+    LEFT JOIN enrollments en ON en.course_id = c.course_id AND en.student_id = ?
+    WHERE en.student_id IS NULL 
+    ORDER BY score DESC;
   `;
 
   try {
-    const results = await fetchData(query);
+    const results = await fetchData(query, [id]); 
+
     res.json(results);
   } catch (error) {
-    res.status(500).json({ error });
+    console.error('Error fetching suggested courses:', error);
+    res.status(500).json({ error: 'An error occurred while fetching suggested courses' });
   }
 });
 
@@ -167,7 +180,7 @@ app.get('/api/enrolled-courses', async (req, res) => {
       en.enrollment_date, t.name, t.date_start, t.date_end, t.duration, t.status
     FROM enrollments en 
     LEFT JOIN training_courses t ON en.course_id = t.course_id 
-    WHERE en.student_id = ?
+    WHERE en.student_id = ? && en.status != 'complete'
   `;
 
   try {
@@ -184,7 +197,7 @@ app.get('/api/courses', async (req, res) => {
   const { id } = req.query;
 
   const query = `
-    SELECT c.course_id AS id, c.name AS name, c.description, c.platform, CONCAT(e.first_name, " ", e.last_name) AS instructor, c.date_start, c.date_end, c.duration, g.name AS group_name 
+    SELECT c.course_id AS id, c.name AS name, c.description, c.platform, CONCAT(e.first_name, " ", e.last_name) AS instructor, c.date_start, c.date_end, c.duration, g.name AS group_name, JSON_EXTRACT(c.rating, '$.score') AS score
     FROM training_courses c 
     LEFT JOIN training_groups g ON c.course_group_id = g.group_id
     LEFT JOIN employees e ON c.instructor_id = e.employee_id
@@ -198,6 +211,36 @@ app.get('/api/courses', async (req, res) => {
     res.status(500).json({ error });
   }
 });
+
+// Get status specific course
+app.get('/api/course-status', async (req, res) => {
+  const { course_id, student_id } = req.query;
+
+  if (!course_id || !student_id) {
+    return res.status(400).json({ error: 'Both course_id and student_id are required' });
+  }
+
+  const query = `
+    SELECT e.status 
+    FROM enrollments e 
+    WHERE e.course_id = ? 
+      AND e.student_id = ?
+  `;
+
+  try {
+    const result = await fetchData(query, [course_id, student_id]);
+
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'Enrollment not found for the provided course and student' });
+    }
+
+    res.json({ status: result[0].status });
+  } catch (error) {
+    console.error('Error fetching course status:', error);
+    res.status(500).json({ error: 'An error occurred while fetching course status' });
+  }
+});
+
 
 app.listen(5000, () => {
   console.log('Server started on port 5000');

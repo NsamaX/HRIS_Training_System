@@ -11,8 +11,8 @@ const CourseDescription = ({ course }) => {
         {course.description}
         <br />
         Duration: {course.duration} hours 
-        {/* <br />
-        Rating: {course.score} */}
+        <br />
+        Rating: {course.score != null ? course.score : 'N/A'}
         <br />
         Instructor: {course.instructor}
         <br />
@@ -20,7 +20,7 @@ const CourseDescription = ({ course }) => {
         <br />
         End Date: {new Date(course.date_end).toLocaleDateString()}
         <br />
-        Platform: {course.platform}
+        {course.platform}
       </BodyMedium>
     </div>
   );

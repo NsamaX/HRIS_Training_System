@@ -18,18 +18,6 @@
   border-radius: 6px;
 }
 
-@media (max-width: 900px) {
-  .course-columns {
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .course-left-column {
-    flex: none;
-    width: 100%;
-  }
-}
-
 .course-right-column {
   display: flex;
   flex: 3;
@@ -99,4 +87,16 @@
 .review-buttons {
   display: flex; 
   gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .course-columns {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .course-left-column {
+    flex: none;
+    width: 100%;
+  }
 }
