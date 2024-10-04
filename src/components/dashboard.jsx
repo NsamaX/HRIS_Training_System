@@ -138,7 +138,13 @@ const Achievements = ({ achievements, windowWidth }) => (
 );
 
 const SuggestedCourses = ({ courses, handleClick, windowWidth }) => (
-  <Section title="Suggested Courses" items={courses} handleClick={handleClick} windowWidth={windowWidth} showScore={true} />
+  <Section 
+    title={`Suggested ${windowWidth >= 500 ? "Courses" : "Cours.."}`} 
+    items={courses} 
+    handleClick={handleClick} 
+    windowWidth={windowWidth} 
+    showScore={true} 
+  />
 );
 
 const CourseRow = ({ course, handleClick }) => (

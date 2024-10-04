@@ -3,7 +3,6 @@ import { TitleLarge, TitleMedium, BodyMedium } from '../styles/StyledComponents'
 import '../styles/course.css';
 
 const CourseDescription = ({ course }) => {
-  console.log(course);
   return (
     <div className='title'>
       <TitleMedium>{course.name}</TitleMedium>
@@ -26,41 +25,52 @@ const CourseDescription = ({ course }) => {
   );
 };
 
-const RatingBar = ({ status, star, ratingMap, onRatingSelected }) => {
+const RatingBar = ({ status, ratingMap, onRatingSelected }) => {
+  if (!ratingMap || ratingMap.size === 0) {
+    return (
+      <div className="rating-bar">
+        <TitleMedium>Rating</TitleMedium>
+        <BodyMedium>Not available</BodyMedium>
+      </div>
+    );
+  }
+
+  const totalVotes = Array.from(ratingMap.values()).reduce((a, b) => a + b, 0);
+
   return (
     <div className="rating-bar">
       <TitleMedium>Rating</TitleMedium>
-      {Object.entries(ratingMap)
+      {Array.from(ratingMap.entries())
         .sort((a, b) => b[0] - a[0])
-        .map(([stars, percentage]) => (
-          <RatingRow
-            key={stars}
-            status={status}
-            star={star}
-            stars={parseInt(stars)}
-            percentage={percentage}
-            onClick={() => onRatingSelected(parseInt(stars))}
-          />
-        ))}
+        .map(([star, votes]) => {
+          const percentage = totalVotes > 0 ? (votes / totalVotes) * 100 : 0;
+          return (
+            <RatingRow
+              key={star}
+              status={status}
+              star={star}
+              votes={votes}
+              percentage={percentage}
+              onClick={() => onRatingSelected(star)}
+            />
+          );
+        })}
     </div>
   );
 };
 
-const RatingRow = ({ status, star, stars, percentage, onClick }) => {
+const RatingRow = ({ star, votes, percentage, onClick }) => {
   return (
     <div className="rating-row" onClick={onClick}>
-      <p>{stars}</p>
-      {status === 'completed' && (
-        <span>{stars > star ? '☆' : '★'}</span>
-      )}
+      <p>{star} ★</p>
       <div className="bar-container">
-        <div className="bar" style={{ width: `${percentage * 100}%` }} />
+        <div className="bar" style={{ width: `${percentage}%` }} />
       </div>
     </div>
   );
 };
 
-const ReviewAndEnrollButtons = ({ status }) => {
+const ReviewAndEnrollButtons = ({ status, onEnroll }) => {
   return (
     <div className='title'>
       {status === 'completed' && (
@@ -76,7 +86,7 @@ const ReviewAndEnrollButtons = ({ status }) => {
             <ActionButton label="Get Certificate" />
           </>
         ) : (
-          <ActionButton label="Enroll" />
+          <ActionButton label="Enroll" onClick={onEnroll} />
         )}
       </div>
     </div>
@@ -91,7 +101,7 @@ const ActionButton = ({ label, onClick }) => {
   );
 };
 
-const Course = ({ course, status, onRatingSelected }) => {
+const Course = ({ course, rating, status, onRatingSelected, onEnroll }) => {
   return (
     <div className='course-content'>
       <div className='title'>
@@ -103,8 +113,8 @@ const Course = ({ course, status, onRatingSelected }) => {
         </div>
         <div className='course-right-column'>
           <CourseDescription course={course} />
-          {/* <RatingBar status={course.status} star={course.star} ratingMap={course.ratingMap} onRatingSelected={onRatingSelected} /> */}
-          <ReviewAndEnrollButtons status={status} />
+          <RatingBar status={status} star={0} ratingMap={rating} onRatingSelected={onRatingSelected} />
+          <ReviewAndEnrollButtons status={'completed'} onEnroll={onEnroll} />
         </div>
       </div>
     </div>

@@ -60,7 +60,7 @@ CREATE TABLE training_courses (
     date_end DATE NOT NULL,
     duration INT NOT NULL,
     status ENUM('planned', 'incoming', 'ongoing', 'canceled') NOT NULL,
-    rating JSON,
+    rating JSON NOT NULL,
     FOREIGN KEY (course_group_id) REFERENCES training_groups(group_id),
     FOREIGN KEY (instructor_id) REFERENCES employees(employee_id)
 );

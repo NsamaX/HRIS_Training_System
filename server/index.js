@@ -231,7 +231,7 @@ app.get('/api/course-status', async (req, res) => {
     const result = await fetchData(query, [course_id, student_id]);
 
     if (result.length === 0) {
-      return res.status(404).json({ error: 'Enrollment not found for the provided course and student' });
+      return res.json({ status: null });
     }
 
     res.json({ status: result[0].status });
@@ -241,6 +241,39 @@ app.get('/api/course-status', async (req, res) => {
   }
 });
 
+// Get course rating
+app.get('/api/course-rating', async (req, res) => {
+  const { course_id } = req.query;
+
+  if (!course_id) {
+    return res.status(400).json({ error: 'course_id is required' });
+  }
+
+  const query = `
+    SELECT JSON_EXTRACT(t.rating, '$.star') AS star 
+    FROM training_courses t
+    WHERE t.course_id = ?
+  `;
+
+  try {
+    const result = await fetchData(query, [course_id]);
+
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+
+    const star = result[0].star;
+
+    if (star !== null) {
+      res.json({ star: JSON.parse(star) });
+    } else {
+      res.status(404).json({ error: 'Rating not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching course rating:', error);
+    res.status(500).json({ error: 'An error occurred while fetching course rating' });
+  }
+});
 
 app.listen(5000, () => {
   console.log('Server started on port 5000');
