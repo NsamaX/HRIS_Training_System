@@ -71,7 +71,7 @@ CREATE TABLE enrollments (
     user_enrolled_id INT NOT NULL,
     student_id INT NOT NULL,
     enrollment_date DATE NOT NULL,
-    status ENUM('enrolled', 'in-progress', 'in-complete', 'completed', 'failed') NOT NULL,
+    status ENUM('completed', 'in-complete', 'in-progress', 'failed', 'not-enroll') NOT NULL,
     rating TINYINT,
     FOREIGN KEY (course_id) REFERENCES training_courses(course_id),
     FOREIGN KEY (student_id) REFERENCES employees(employee_id)

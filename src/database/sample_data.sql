@@ -34,28 +34,16 @@ VALUES
 INSERT INTO positions (name, description)
 VALUES
 (
-    'Project Manager', 
-    'Oversees project execution and team coordination'
-),
-(
     'HR Manager', 
     'Manages human resources and employee relations'
 ),
 (
     'Software Developer', 
     'Develops and maintains software applications'
-),
-(
-    'Data Analyst', 
-    'Analyzes and interprets complex data to assist in decision-making'
 );
 
 INSERT INTO departments (name, description)
 VALUES
-(
-    'Project Management Office', 
-    'Oversees project execution, team coordination, and ensures project delivery on time'
-),
 (
     'Human Resources', 
     'Manages employee recruitment, employee relations, and welfare'
@@ -72,9 +60,9 @@ VALUES
     'Doe', 
     'john.doe@example.com', 
     1, 
-    1, 
-    1, 
-    '2023-01-15', 
+    2, 
+    2, 
+    '2022-01-10', 
     'active'
 ),
 (
@@ -82,9 +70,9 @@ VALUES
     'Smith', 
     'jane.smith@example.com', 
     2, 
-    2, 
-    2, 
-    '2022-07-20', 
+    1, 
+    1, 
+    '2022-01-11', 
     'active'
 ),
 (
@@ -92,19 +80,29 @@ VALUES
     'Johnson', 
     'alice.johnson@example.com', 
     3, 
-    3, 
-    3, 
-    '2023-05-10', 
+    2, 
+    2, 
+    '2022-01-12', 
+    'active'
+),
+(
+    'Michael', 
+    'Brown', 
+    'michael.brown@example.com', 
+    3,
+    2,
+    2,
+    '2022-01-13', 
     'inactive'
 ),
 (
-    'Bob', 
-    'Williams', 
-    'bob.williams@example.com', 
-    3, 
-    4, 
-    3, 
-    '2021-09-05', 
+    'Emily', 
+    'Davis', 
+    'emily.davis@example.com', 
+    3,
+    2,
+    2,
+    '2022-01-14', 
     'terminated'
 );
 
@@ -113,22 +111,27 @@ VALUES
 (
     1, 
     'john.doe@example.com', 
-    '$2a$12$eEXAMPLEofHASHEDpassWORDexampleEXAMPLEHASHEDpass'
+    'hashed_password'
 ),
 (
     2, 
     'jane.smith@example.com', 
-    '$2a$12$eEXAMPLEofHASHEDpassWORDexampleEXAMPLEHASHEDpass'
+    'hashed_password'
 ),
 (
     3, 
     'alice.johnson@example.com', 
-    '$2a$12$eEXAMPLEofHASHEDpassWORDexampleEXAMPLEHASHEDpass'
+    'hashed_password'
 ),
 (
     4, 
-    'bob.williams@example.com', 
-    '$2a$12$eEXAMPLEofHASHEDpassWORDexampleEXAMPLEHASHEDpass'
+    'michael.brown@example.com', 
+    'hashed_password'
+),
+(
+    5, 
+    'emily.davis@example.com', 
+    'hashed_password'
 );
 
 INSERT INTO training_groups (name, description)
@@ -165,15 +168,15 @@ VALUES
     '2024-01-10', 
     '2024-01-15', 
     5, 
-    'ongoing',
+    'planned',
     '{
-        "score": 4.39,
+        "score": 3,
         "star": {
-            "5": 60,
-            "4": 25,
-            "3": 10,
-            "2": 4,
-            "1": 1
+            "5": 0,
+            "4": 0,
+            "3": 1,
+            "2": 0,
+            "1": 0
         }
     }'
 ),
@@ -186,7 +189,7 @@ VALUES
     '2024-02-01', 
     '2024-02-10', 
     10, 
-    'planned',
+    'incoming',
     '{
         "score": 0,
         "star": {
@@ -199,15 +202,15 @@ VALUES
     }'
 ),
 (
-    2, 
-    'Effective Communication', 
-    'Improve communication skills in a professional setting', 
-    'Online: Udemy',
+    3, 
+    'Effective Communication Skills', 
+    'Learn techniques to improve workplace communication', 
+    'Online: www.communication-course.com',
     2, 
     '2024-03-05', 
-    '2024-03-10', 
-    5, 
-    'planned',
+    '2024-03-12', 
+    7, 
+    'ongoing',
     '{
         "score": 0,
         "star": {
@@ -220,36 +223,36 @@ VALUES
     }'
 ),
 (
-    1, 
-    'Team Leadership Essentials', 
-    'Focus on building effective team leadership skills', 
-    'Online: Udemy',
-    1, 
-    '2024-04-01', 
-    '2024-04-05', 
-    5, 
-    'planned',
-    '{
-        "score": 0,
-        "star": {
-            "5": 0,
-            "4": 0,
-            "3": 0,
-            "2": 0,
-            "1": 0
-        }
-    }'
-),
-(
+    4, 
+    'Time Management Mastery', 
+    'Master the art of managing your time effectively', 
+    'Hybrid: Part onsite, part online',
     2, 
-    'Data Analysis with Python', 
-    'Learn data analysis techniques using Python programming', 
-    'Online: Udemy',
+    '2024-04-15', 
+    '2024-04-22', 
+    8, 
+    'ongoing',
+    '{
+        "score": 0,
+        "star": {
+            "5": 0,
+            "4": 0,
+            "3": 0,
+            "2": 0,
+            "1": 0
+        }
+    }'
+),
+(
+    5, 
+    'Project Management Fundamentals', 
+    'Introduction to project management methodologies', 
+    'Onsite: Project Management HQ',
     3, 
     '2024-05-01', 
-    '2024-05-15', 
-    15, 
-    'planned',
+    '2024-05-10', 
+    6, 
+    'canceled',
     '{
         "score": 0,
         "star": {
@@ -270,30 +273,38 @@ VALUES
     1, 
     '2024-01-05', 
     'completed',
-    5
+    3
 ),
 (
     2, 
     1,
     1, 
-    '2024-01-30', 
+    '2024-02-15', 
+    'in-complete',
+    null
+),
+(
+    3, 
+    1,
+    1, 
+    '2024-03-20', 
     'in-progress',
     null
 ),
 (
-    3, 
-    2,
+    4, 
+    1,
     1, 
-    '2024-02-25', 
-    'enrolled',
+    '2024-05-30', 
+    'failed',
     null
 ),
 (
-    3, 
-    2,
+    5, 
+    1,
     1, 
-    '2024-02-25', 
-    'enrolled',
+    '2024-04-25', 
+    'not-enroll',
     null
 );
 
@@ -322,11 +333,10 @@ VALUES
 
 INSERT INTO transactions (action_type_id, user_id, description, timestamp)
 VALUES
-(1, 1, NULL, '2024-01-10 08:30:00'),
-(2, 1, NULL, '2024-01-10 17:00:00'),
-(3, 2, NULL, '2024-01-15 10:45:00'),
-(4, 3, NULL, '2024-02-01 09:00:00'),
-(5, 1, '{"course": 1}', '2024-02-01 10:23:00');
+(5, 1, '{"course": 1}', '2024-02-01 10:23:00'),
+(5, 1, '{"course": 3}', '2024-02-01 10:45:30'),
+(5, 1, '{"course": 5}', '2024-02-01 11:10:15'),
+(5, 1, '{"course": 3}', '2024-02-01 11:55:00');
 
 INSERT INTO report_types (name, description)
 VALUES
@@ -383,6 +393,6 @@ VALUES
 INSERT INTO hall_of_fame (employee_id, achievement_id)
 VALUES
 (1, 1),
-(2, 2),
-(3, 3),
+(1, 2),
+(1, 3),
 (1, 4); 

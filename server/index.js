@@ -57,11 +57,12 @@ app.get('/api/recent-courses', async (req, res) => {
   const query = `
     SELECT c.course_id AS id, c.name, t.timestamp
     FROM enrollments en
-    LEFT JOIN transactions t ON t.user_id = en.student_id AND JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = en.course_id
-    LEFT JOIN training_courses c ON JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = c.course_id
+    INNER JOIN transactions t ON t.user_id = en.student_id 
+        AND JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = en.course_id
+    INNER JOIN training_courses c ON en.course_id = c.course_id
     WHERE en.student_id = ?
     ORDER BY en.enrollment_date DESC 
-    LIMIT 4
+    LIMIT 4;
   `;
 
   try {
@@ -81,7 +82,7 @@ app.get('/api/courses-status', async (req, res) => {
     SELECT 
       SUM(CASE WHEN ec.status = 'completed' THEN 1 ELSE 0 END) AS completed,
       SUM(CASE WHEN ec.status = 'in-complete' THEN 1 ELSE 0 END) AS incomplete,
-      SUM(CASE WHEN ec.status = 'enrolled' THEN 1 ELSE 0 END) AS enrolled
+      SUM(CASE WHEN ec.status = 'in-progress' THEN 1 ELSE 0 END) AS in-progress
     FROM enrollments ec
     WHERE ec.student_id = ?
   `;
@@ -150,7 +151,7 @@ app.get('/api/suggested-courses', async (req, res) => {
     LEFT JOIN training_groups g ON c.course_group_id = g.group_id
     LEFT JOIN enrollments en ON en.course_id = c.course_id AND en.student_id = ?
     WHERE en.student_id IS NULL 
-    ORDER BY score DESC;
+    ORDER BY score DESC
   `;
 
   try {

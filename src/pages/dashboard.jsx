@@ -9,28 +9,31 @@ const DashboardPage = () => {
   const [achievements, setAchievements] = useState([]);
   const [suggestedCourses, setSuggestedCourses] = useState([]);
   const [courses, setCourses] = useState([]);
+  const section = { employee_id: 1 };
+
+  const fetchData = async (url, setter) => {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setter(data);
+    } catch (error) {
+      console.error(`Error fetching ${url}:`, error);
+    }
+  };
 
   useEffect(() => {
-    const employeeId = 1;
+    const endpoints = [
+      { url: `http://localhost:5000/api/employees?id=${section.employee_id}`, setter: setEmployee },
+      { url: `http://localhost:5000/api/recent-courses?id=${section.employee_id}`, setter: setRecentlyCourses },
+      { url: `http://localhost:5000/api/courses-status?id=${section.employee_id}`, setter: setStatus },
+      { url: `http://localhost:5000/api/completed-courses?id=${section.employee_id}`, setter: setCompletedCourses },
+      { url: `http://localhost:5000/api/hall-of-fame?id=${section.employee_id}`, setter: setAchievements },
+      { url: `http://localhost:5000/api/suggested-courses?id=${section.employee_id}`, setter: setSuggestedCourses },
+      { url: `http://localhost:5000/api/enrolled-courses?id=${section.employee_id}`, setter: setCourses },
+    ];
 
-    const fetchData = async (url, setter) => {
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        setter(data);
-      } catch (error) {
-        console.error(`Error fetching ${url}:`, error);
-      }
-    };
-
-    fetchData(`http://localhost:5000/api/employees?id=${employeeId}`, setEmployee);
-    fetchData(`http://localhost:5000/api/recent-courses?id=${employeeId}`, setRecentlyCourses);
-    fetchData(`http://localhost:5000/api/courses-status?id=${employeeId}`, setStatus);
-    fetchData(`http://localhost:5000/api/completed-courses?id=${employeeId}`, setCompletedCourses);
-    fetchData(`http://localhost:5000/api/hall-of-fame?id=${employeeId}`, setAchievements);
-    fetchData(`http://localhost:5000/api/suggested-courses?id=${employeeId}`, setSuggestedCourses);
-    fetchData(`http://localhost:5000/api/enrolled-courses?id=${employeeId}`, setCourses);
-  }, []);
+    endpoints.forEach(({ url, setter }) => fetchData(url, setter));
+  }, [section]);
 
   return (
     <Dashboard 

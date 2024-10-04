@@ -18,9 +18,7 @@ const CustomAppBar = ({ selectedPage }) => {
     { text: 'Signout', icon: <LogoutRounded />, action: () => handleSignout() },
   ];
 
-  const handleNavigation = (path) => {
-    if (path) navigate(path);
-  };
+  const handleNavigation = (path) => path && navigate(path);
 
   const handleSignout = () => {
     console.log('User signed out');
@@ -28,20 +26,22 @@ const CustomAppBar = ({ selectedPage }) => {
   };
 
   const renderNavButton = ({ text, icon, path }, index) => (
-    <Button
-      key={index}
-      color={selectedPage === index ? 'inherit' : 'secondary'}
-      onClick={() => handleNavigation(path)}
-      startIcon={icon}
-      className={`nav-button ${selectedPage === index ? 'active' : ''}`}
-    >
-      {text}
-    </Button>
+    <div className='nav-button-container' key={index}>
+      <Button
+        color={selectedPage === index ? 'inherit' : 'secondary'}
+        onClick={() => handleNavigation(path)}
+        startIcon={icon}
+        className={`nav-button ${selectedPage === index ? 'active' : ''}`}
+      >
+        {text}
+      </Button>
+      {/* {selectedPage === index && <hr />} */}
+    </div>
   );
 
   const renderIconButton = ({ text, icon, action }, index) => (
     <Tooltip key={index} title={text}>
-      <IconButton className="icon-button" color="inherit" onClick={action || null}>
+      <IconButton className="icon-button" color="inherit" onClick={action}>
         {icon}
       </IconButton>
     </Tooltip>

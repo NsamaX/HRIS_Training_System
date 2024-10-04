@@ -77,6 +77,7 @@
   border: 1px solid #D9D9D9;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .action-button:hover {

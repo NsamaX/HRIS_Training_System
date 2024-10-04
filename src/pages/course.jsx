@@ -8,8 +8,9 @@ const CoursesPage = () => {
   const [courseRatings, setCourseRatings] = useState(new Map());
   const [userVote, setUserVote] = useState(0);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const section = { student_id: 1 };
+  const section = { student_id: 1 }; 
 
   const fetchData = async (url) => {
     const response = await fetch(url);
@@ -19,6 +20,7 @@ const CoursesPage = () => {
 
   const fetchCourseData = async () => {
     const courseId = new URLSearchParams(location.search).get('id');
+    setLoading(true);
     try {
       const [courseData, statusData, ratingData, voteData] = await Promise.all([
         fetchData(`http://localhost:5000/api/courses?id=${courseId}`),
@@ -31,9 +33,12 @@ const CoursesPage = () => {
       setCourseStatus(statusData.status || '');
       setCourseRatings(new Map(Object.entries(ratingData.star || {})));
       setUserVote(voteData);
+      setError(null);
     } catch (err) {
       console.error('Error fetching data:', err);
-      setError('Error fetching data');
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,7 +55,7 @@ const CoursesPage = () => {
       fetchCourseData();
     } catch (err) {
       console.error('Error updating vote:', err);
-      setError('Error updating vote');
+      setError(err.message);
     }
   };
 
@@ -60,7 +65,9 @@ const CoursesPage = () => {
 
   return (
     <div>
-      {error ? (
+      {loading ? (
+        <p className='status'>Loading...</p>
+      ) : error ? (
         <p className='status'>{error}</p>
       ) : course ? (
         <Course 
@@ -71,7 +78,7 @@ const CoursesPage = () => {
           onRatingSelected={handleRatingSelected}
         />
       ) : (
-        <p className='status'>Loading...</p>
+        <p className='status'>Course not found.</p>
       )}
     </div>
   );
