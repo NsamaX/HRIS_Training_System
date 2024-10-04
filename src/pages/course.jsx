@@ -6,9 +6,10 @@ const CoursesPage = () => {
   const [course, setCourse] = useState(null);
   const [courseStatus, setCourseStatus] = useState('');
   const [courseRatings, setCourseRatings] = useState(new Map());
-  const [userVote, setUserVote] = useState(0);
+  const [currentVote, setCurrentVote] = useState(0);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
   const location = useLocation();
   const section = { student_id: 1 };
 
@@ -37,7 +38,7 @@ const CoursesPage = () => {
       setCourse(courseData[0]);
       setCourseStatus(statusData.status || '');
       setCourseRatings(new Map(Object.entries(ratingData.star || {})));
-      setUserVote(voteData);
+      setCurrentVote(voteData || 0);
       setError(null);
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -47,41 +48,54 @@ const CoursesPage = () => {
     }
   };
   
-  
   const handleRatingSelected = async (rating) => {
-    const newVote = rating;
-    setUserVote(newVote);
+    setCurrentVote(rating);
     
+    setActionLoading(true);
     try {
       await fetch('http://localhost:5000/api/course-vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ course_id: course.id, student_id: section.student_id, rating: newVote }),
+        body: JSON.stringify({ course_id: course.id, student_id: section.student_id, rating }),
       });
       fetchCourseData();
     } catch (err) {
       console.error('Error updating vote:', err);
       setError(err.message);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   const handleEnroll = async () => {
+    const endpoint = currentVote !== 0 ? 'unenroll' : 'enroll';
+    
+    setActionLoading(true);
     try {
-      await fetch('http://localhost:5000/api/enroll', {
-        method: 'POST',
+      await fetch(`http://localhost:5000/api/${endpoint}`, {
+        method: currentVote !== 0 ? 'DELETE' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ course_id: course.id, student_id: section.student_id }),
       });
-      alert('Enrollment successful!');
+      alert(currentVote !== 0 ? 'Unenrollment successful!' : 'Enrollment successful!');
       fetchCourseData();
     } catch (err) {
-      console.error('Error enrolling in course:', err);
+      console.error(`Error ${currentVote !== 0 ? 'unenrolling' : 'enrolling'} in course:`, err);
       setError(err.message);
+    } finally {
+      setActionLoading(false);
     }
   };
-
+  
   useEffect(() => {
-    fetchCourseData();
+    let isMounted = true;
+    const fetchDataAsync = async () => {
+      await fetchCourseData();
+      if (!isMounted) return;
+    };
+    fetchDataAsync();
+
+    return () => { isMounted = false };
   }, [location]);
 
   return (
@@ -95,13 +109,14 @@ const CoursesPage = () => {
           course={course}
           rating={courseRatings}
           status={courseStatus}
-          userVote={userVote}
+          userVote={currentVote}
           onRatingSelected={handleRatingSelected}
           onEnroll={handleEnroll}
         />
       ) : (
         <p className='status'>Course not found.</p>
       )}
+      {actionLoading && <p className='status'>Processing your request...</p>}
     </div>
   );
 };

@@ -352,7 +352,6 @@ app.post('/api/course-vote', async (req, res) => {
     return res.status(400).json({ error: 'Rating must be between 0 and 5' });
   }
 
-  // Step 1: Fetch the existing rating
   const fetchQuery = `
     SELECT 
       rating 
@@ -372,7 +371,6 @@ app.post('/api/course-vote', async (req, res) => {
     return res.status(500).json({ error: 'An error occurred while fetching existing rating' });
   }
 
-  // Step 2: Update the star rating JSON
   let updateQuery = `
     SELECT 
       JSON_EXTRACT(rating, '$.star') AS star, 
@@ -397,27 +395,21 @@ app.post('/api/course-vote', async (req, res) => {
     return res.status(500).json({ error: 'An error occurred while fetching course star ratings' });
   }
 
-  // Step 3: Update the star JSON
   if (existingRating) {
-    // Decrease the count of the old rating
     currentStars[existingRating] = currentStars[existingRating] > 0 ? currentStars[existingRating] - 1 : 0;
   }
   
-  // Increase the count of the new rating
   currentStars[rating] = (currentStars[rating] || 0) + 1;
 
-  // Step 4: Recalculate the score
   const totalVotes = Object.values(currentStars).reduce((total, count) => total + count, 0);
   const weightedSum = Object.entries(currentStars).reduce((sum, [star, count]) => sum + (star * count), 0);
   const newScore = totalVotes > 0 ? (weightedSum / totalVotes) : 0;
 
-  // Step 5: Prepare the new rating JSON
   const updatedRatingJson = JSON.stringify({
     score: newScore,
     star: currentStars
   });
 
-  // Step 6: Update the rating in the enrollments table and courses table
   const updateEnrollmentQuery = `UPDATE enrollments SET rating = ? WHERE course_id = ? AND student_id = ?`;
   const updateCourseQuery = `UPDATE training_courses SET rating = ? WHERE course_id = ?`;
 
@@ -432,7 +424,6 @@ app.post('/api/course-vote', async (req, res) => {
   }
 });
 
-// Endpoint to enroll a student in a course
 app.post('/api/enroll', async (req, res) => {
   const { course_id, student_id } = req.body;
   
@@ -455,6 +446,27 @@ app.post('/api/enroll', async (req, res) => {
   } catch (error) {
     console.error('Error enrolling student:', error);
     res.status(500).json({ error: 'An error occurred while enrolling the student' });
+  }
+});
+
+app.delete('/api/unenroll', async (req, res) => {
+  const { course_id, student_id } = req.body;
+  
+  if (!course_id || !student_id) {
+    return res.status(400).json({ error: 'course_id and student_id are required' });
+  }
+
+  const query = `
+    DELETE FROM enrollments
+    WHERE course_id = ? AND student_id = ?
+  `;
+
+  try {
+    await fetchData(query, [course_id, student_id]);
+    res.status(200).json({ message: 'Unenrollment successful' });
+  } catch (error) {
+    console.error('Error unenrolling student:', error);
+    res.status(500).json({ error: 'An error occurred while unenrolling the student' });
   }
 });
 

@@ -62,7 +62,7 @@ const RatingRow = ({ status, star, vote, percentage, onClick }) => {
   );
 };
 
-const ReviewAndEnrollButtons = ({ enroll, status, onUnenroll, onEnroll }) => {
+const ReviewAndEnrollButtons = ({ enroll, status, onEnroll }) => {
   return (
     <div className='title'>
       {status === 'completed' && (
@@ -74,13 +74,11 @@ const ReviewAndEnrollButtons = ({ enroll, status, onUnenroll, onEnroll }) => {
       <div className="review-buttons">
         {status === 'completed' ? (
           <>
-            <ActionButton label="Write a review" />
-            <ActionButton label="Get Certificate" />
+            <ActionButton label="Write a review" onClick={() => console.log("Review clicked!")} />
+            <ActionButton label="Get Certificate" onClick={() => console.log("Certificate clicked!")} />
           </>
-        ) : enroll ? (
-          <ActionButton label="Unenroll" onClick={onUnenroll} />
         ) : (
-          <ActionButton label="Enroll" onClick={onEnroll} />
+          <ActionButton label={enroll ? "Unenroll" : "Enroll"} onClick={onEnroll} />
         )}
       </div>
     </div>
