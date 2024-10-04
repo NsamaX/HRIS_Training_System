@@ -227,12 +227,11 @@ app.get('/api/enrolled-courses', async (req, res) => {
     LEFT JOIN 
       training_courses t ON en.course_id = t.course_id 
     WHERE 
-      en.student_id = 1 && en.status IN ('in-complete', 'in-progress') && t.status NOT IN ('planned', 'canceled' )
+      en.student_id = ? && en.status IN ('in-complete', 'in-progress') && t.status NOT IN ('planned', 'canceled' )
   `;
 
   try {
     const results = await fetchData(query, [id]);
-    if (results.length === 0) return res.status(404).json({ message: 'No courses found' });
     res.json(results);
   } catch (error) {
     res.status(500).json({ error });
