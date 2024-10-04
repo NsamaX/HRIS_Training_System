@@ -1,5 +1,5 @@
 import React from 'react';
-import { TitleLarge, TitleMedium, BodyMedium, BodySmall } from '../styles/StyledComponents';
+import { TitleLarge, TitleMedium, BodyMedium } from '../styles/StyledComponents';
 import '../styles/course.css';
 
 const CourseDescription = ({ course }) => {
@@ -25,7 +25,7 @@ const CourseDescription = ({ course }) => {
   );
 };
 
-const RatingBar = ({ status, ratingMap, onRatingSelected }) => {
+const RatingBar = ({ status, ratingMap, userVote, onRatingSelected }) => {
   if (!ratingMap || ratingMap.size === 0) {
     return (
       <div className="rating-bar">
@@ -49,7 +49,7 @@ const RatingBar = ({ status, ratingMap, onRatingSelected }) => {
               key={star}
               status={status}
               star={star}
-              vote={0}
+              vote={userVote}
               percentage={percentage}
               onClick={() => onRatingSelected(star)}
             />
@@ -102,7 +102,7 @@ const ActionButton = ({ label, onClick }) => {
   );
 };
 
-const Course = ({ course, rating, status, onRatingSelected, onEnroll }) => {
+const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }) => {
   return (
     <div className='course-content'>
       <div className='title'>
@@ -114,7 +114,12 @@ const Course = ({ course, rating, status, onRatingSelected, onEnroll }) => {
         </div>
         <div className='course-right-column'>
           <CourseDescription course={course} />
-          <RatingBar status={status} star={0} ratingMap={rating} onRatingSelected={onRatingSelected} />
+          <RatingBar 
+            status={status} 
+            ratingMap={rating} 
+            userVote={userVote}
+            onRatingSelected={onRatingSelected} 
+          />
           <ReviewAndEnrollButtons status={status} onEnroll={onEnroll} />
         </div>
       </div>

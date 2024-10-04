@@ -6,6 +6,7 @@ const CoursesPage = () => {
   const [course, setCourse] = useState(null);
   const [courseStatus, setCourseStatus] = useState(null);
   const [courseRatings, setCourseRatings] = useState(new Map());
+  const [userVote, setUserVote] = useState(null);
   const [error, setError] = useState(null); 
   const location = useLocation();
 
@@ -22,7 +23,6 @@ const CoursesPage = () => {
       return;
     }
 
-    // Fetch course data
     fetch(`http://localhost:5000/api/courses?id=${courseId}`)
       .then(response => {
         if (!response.ok) {
@@ -42,7 +42,6 @@ const CoursesPage = () => {
         setError('Error fetching course data');
       });
 
-    // Fetch course status
     fetch(`http://localhost:5000/api/course-status?course_id=${courseId}&student_id=1`)
       .then(response => {
         if (!response.ok) {
@@ -62,7 +61,6 @@ const CoursesPage = () => {
         setCourseStatus('');
       });
 
-    // Fetch course rating and store in Map
     fetch(`http://localhost:5000/api/course-rating?course_id=${courseId}`)
       .then(response => {
         if (!response.ok) {
@@ -85,6 +83,22 @@ const CoursesPage = () => {
         setError('Error fetching course rating');
       });
 
+    // Fetch user's vote
+    fetch(`http://localhost:5000/api/course-vote?course_id=${courseId}&student_id=1`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch user vote');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setUserVote(data);
+      })
+      .catch(error => {
+        console.error('Error fetching user vote:', error);
+        setError('Error fetching user vote');
+      });
+
   }, [location]);
 
   const handleRatingSelected = (rating) => {
@@ -100,6 +114,7 @@ const CoursesPage = () => {
           course={course}
           rating={courseRatings}
           status={courseStatus}
+          userVote={userVote}
           onRatingSelected={handleRatingSelected}
         />
       ) : (

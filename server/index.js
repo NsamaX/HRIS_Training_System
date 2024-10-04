@@ -29,7 +29,6 @@ const fetchData = (query, params) => {
   });
 };
 
-// Get employee data
 app.get('/api/employees', async (req, res) => {
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'Employee id is required' });
@@ -51,7 +50,6 @@ app.get('/api/employees', async (req, res) => {
   }
 });
 
-// Get recent courses
 app.get('/api/recent-courses', async (req, res) => {
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'User id is required' });
@@ -75,7 +73,6 @@ app.get('/api/recent-courses', async (req, res) => {
   }
 });
 
-// Get course status
 app.get('/api/courses-status', async (req, res) => {
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'Student id is required' });
@@ -97,7 +94,6 @@ app.get('/api/courses-status', async (req, res) => {
   }
 });
 
-// Get completed courses
 app.get('/api/completed-courses', async (req, res) => {
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'Student id is required' });
@@ -118,7 +114,6 @@ app.get('/api/completed-courses', async (req, res) => {
   }
 });
 
-// Get hall of fame achievements
 app.get('/api/hall-of-fame', async (req, res) => {
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'Employee id is required' });
@@ -139,7 +134,6 @@ app.get('/api/hall-of-fame', async (req, res) => {
   }
 });
 
-// Get suggested courses
 app.get('/api/suggested-courses', async (req, res) => {
   const { id } = req.query;
 
@@ -169,7 +163,6 @@ app.get('/api/suggested-courses', async (req, res) => {
   }
 });
 
-// Get enrolled courses
 app.get('/api/enrolled-courses', async (req, res) => {
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: 'Employee id is required' });
@@ -192,7 +185,6 @@ app.get('/api/enrolled-courses', async (req, res) => {
   }
 });
 
-// Get all courses or specific course
 app.get('/api/courses', async (req, res) => {
   const { id } = req.query;
 
@@ -212,7 +204,6 @@ app.get('/api/courses', async (req, res) => {
   }
 });
 
-// Get status specific course
 app.get('/api/course-status', async (req, res) => {
   const { course_id, student_id } = req.query;
 
@@ -241,7 +232,6 @@ app.get('/api/course-status', async (req, res) => {
   }
 });
 
-// Get course rating
 app.get('/api/course-rating', async (req, res) => {
   const { course_id } = req.query;
 
@@ -269,6 +259,28 @@ app.get('/api/course-rating', async (req, res) => {
     } else {
       res.status(404).json({ error: 'Rating not found' });
     }
+  } catch (error) {
+    console.error('Error fetching course rating:', error);
+    res.status(500).json({ error: 'An error occurred while fetching course rating' });
+  }
+});
+
+app.get('/api/course-vote', async (req, res) => {
+  const { course_id, student_id } = req.query;
+
+  if (!course_id || !student_id) {
+    return res.status(400).json({ error: 'course_id and student_id are required' });
+  }
+
+  const query = `
+    SELECT rating AS vote
+    FROM enrollments 
+    WHERE course_id = ? AND student_id = ?`;
+
+  try {
+    const result = await fetchData(query, [course_id, student_id]);
+
+    res.json(result[0]);
   } catch (error) {
     console.error('Error fetching course rating:', error);
     res.status(500).json({ error: 'An error occurred while fetching course rating' });
