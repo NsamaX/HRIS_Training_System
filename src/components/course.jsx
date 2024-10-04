@@ -1,5 +1,5 @@
 import React from 'react';
-import { TitleLarge, TitleMedium, BodyMedium } from '../styles/StyledComponents';
+import { TitleLarge, TitleMedium, BodyMedium, BodySmall } from '../styles/StyledComponents';
 import '../styles/course.css';
 
 const CourseDescription = ({ course }) => {
@@ -62,7 +62,7 @@ const RatingBar = ({ status, ratingMap, onRatingSelected }) => {
 const RatingRow = ({ star, votes, percentage, onClick }) => {
   return (
     <div className="rating-row" onClick={onClick}>
-      <p>{star} ★</p>
+      <BodyMedium>{star} ★</BodyMedium>
       <div className="bar-container">
         <div className="bar" style={{ width: `${percentage}%` }} />
       </div>
