@@ -71,7 +71,6 @@ const CoursesPage = () => {
       .then(data => {
         if (data && data.star) {
           const ratingsMap = new Map(Object.entries(data.star));
-          console.log(ratingsMap);
           setCourseRatings(ratingsMap);
         } else {
           console.error('Course rating data is not in expected format');
@@ -101,8 +100,8 @@ const CoursesPage = () => {
 
   }, [location]);
 
-  const handleRatingSelected = (rating) => {
-    console.log('Selected rating:', rating);
+  const handleRatingSelected = (userVote) => {
+    
   };
 
   return (
