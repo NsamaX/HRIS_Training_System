@@ -18,7 +18,7 @@ const Header = ({ filterOptions, searchTerm, onSearchChange }) => (
           value={searchTerm}
           onChange={onSearchChange}
         />
-        <IconButton className='search-icon'><SearchIcon /></IconButton>
+        {/* <IconButton className='search-icon'><SearchIcon /></IconButton> */}
       </div>
     </div>
     <Separator filterOptions={filterOptions} />

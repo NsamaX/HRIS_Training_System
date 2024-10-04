@@ -71,7 +71,12 @@
 .filter-button {
     flex-shrink: 0;
     width: 160px;
+}
+
+.filter-select {
+    flex-shrink: 0;
     height: 30px;
+    width: 160px;
 }
 
 .course-not-found {
