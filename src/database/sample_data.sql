@@ -168,15 +168,15 @@ VALUES
     '2024-01-10', 
     '2024-01-15', 
     5, 
-    'planned',
+    'ongoing',
     '{
-        "score": 3,
+        "score": 4.61,
         "star": {
-            "5": 0,
-            "4": 0,
-            "3": 1,
-            "2": 0,
-            "1": 0
+            "5": 77,
+            "4": 12,
+            "3": 7,
+            "2": 3,
+            "1": 1
         }
     }'
 ),
@@ -189,7 +189,7 @@ VALUES
     '2024-02-01', 
     '2024-02-10', 
     10, 
-    'incoming',
+    'ongoing',
     '{
         "score": 0,
         "star": {
@@ -210,7 +210,7 @@ VALUES
     '2024-03-05', 
     '2024-03-12', 
     7, 
-    'ongoing',
+    'incoming',
     '{
         "score": 0,
         "star": {
@@ -231,7 +231,7 @@ VALUES
     '2024-04-15', 
     '2024-04-22', 
     8, 
-    'ongoing',
+    'planned',
     '{
         "score": 0,
         "star": {
@@ -280,7 +280,7 @@ VALUES
     1,
     1, 
     '2024-02-15', 
-    'in-complete',
+    'in-progress',
     null
 ),
 (
@@ -289,6 +289,7 @@ VALUES
     1, 
     '2024-03-20', 
     'in-progress',
+    'in-complete',
     null
 ),
 (
@@ -296,7 +297,7 @@ VALUES
     1,
     1, 
     '2024-05-30', 
-    'failed',
+    'not-enroll',
     null
 ),
 (
@@ -304,7 +305,7 @@ VALUES
     1,
     1, 
     '2024-04-25', 
-    'not-enroll',
+    'failed',
     null
 );
 
