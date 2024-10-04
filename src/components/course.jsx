@@ -3,7 +3,6 @@ import { TitleLarge, TitleMedium, BodyMedium } from '../styles/StyledComponents'
 import '../styles/course.css';
 
 const CourseDescription = ({ course }) => {
-  console.log(course);
   return (
     <div className='title'>
       <TitleMedium>{course.name}</TitleMedium>
@@ -63,7 +62,7 @@ const RatingRow = ({ status, star, vote, percentage, onClick }) => {
   );
 };
 
-const ReviewAndEnrollButtons = ({ status, onEnroll }) => {
+const ReviewAndEnrollButtons = ({ enroll, status, onUnenroll, onEnroll }) => {
   return (
     <div className='title'>
       {status === 'completed' && (
@@ -78,6 +77,8 @@ const ReviewAndEnrollButtons = ({ status, onEnroll }) => {
             <ActionButton label="Write a review" />
             <ActionButton label="Get Certificate" />
           </>
+        ) : enroll ? (
+          <ActionButton label="Unenroll" onClick={onUnenroll} />
         ) : (
           <ActionButton label="Enroll" onClick={onEnroll} />
         )}
@@ -114,7 +115,7 @@ const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }
               onRatingSelected={onRatingSelected} 
             />
           )}
-          <ReviewAndEnrollButtons status={status} onEnroll={onEnroll} />
+          <ReviewAndEnrollButtons enroll={userVote} status={status} onEnroll={onEnroll} />
         </div>
       </div>
     </div>

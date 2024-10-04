@@ -190,7 +190,7 @@ app.get('/api/suggested-courses', async (req, res) => {
     LEFT JOIN 
       enrollments en ON en.course_id = c.course_id AND en.student_id = ?
     WHERE 
-      en.student_id IS NULL 
+      en.status = 'not-enroll'
     ORDER BY 
       score DESC
   `;
@@ -263,7 +263,6 @@ app.get('/api/courses', async (req, res) => {
       employees e ON c.instructor_id = e.employee_id
     WHERE 
       ${id ? 'c.course_id = ?' : 'c.status = "ongoing"'}
-      ${id ? '' : 'AND c.status = "ongoing"'}
   `;
 
   try {
@@ -430,6 +429,32 @@ app.post('/api/course-vote', async (req, res) => {
   } catch (error) {
     console.error('Error updating course vote:', error);
     return res.status(500).json({ error: 'An error occurred while updating the course vote' });
+  }
+});
+
+// Endpoint to enroll a student in a course
+app.post('/api/enroll', async (req, res) => {
+  const { course_id, student_id } = req.body;
+  
+  if (!course_id || !student_id) {
+    return res.status(400).json({ error: 'course_id and student_id are required' });
+  }
+
+  const enrollmentDate = new Date().toISOString().slice(0, 10);
+  const status = 'in-progress';
+  const rating = 0;
+
+  const query = `
+    INSERT INTO enrollments (course_id, user_enrolled_id, student_id, enrollment_date, status, rating)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  try {
+    await fetchData(query, [course_id, student_id, student_id, enrollmentDate, status, rating]);
+    res.status(201).json({ message: 'Enrollment successful' });
+  } catch (error) {
+    console.error('Error enrolling student:', error);
+    res.status(500).json({ error: 'An error occurred while enrolling the student' });
   }
 });
 
