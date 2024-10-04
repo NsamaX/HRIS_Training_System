@@ -168,7 +168,7 @@ VALUES
     '2024-01-10', 
     '2024-01-15', 
     5, 
-    'ongoing',
+    'planned',
     '{
         "score": 4.61,
         "star": {
@@ -189,7 +189,7 @@ VALUES
     '2024-02-01', 
     '2024-02-10', 
     10, 
-    'ongoing',
+    'incoming',
     '{
         "score": 0,
         "star": {
@@ -210,7 +210,7 @@ VALUES
     '2024-03-05', 
     '2024-03-12', 
     7, 
-    'incoming',
+    'ongoing',
     '{
         "score": 0,
         "star": {
@@ -231,7 +231,7 @@ VALUES
     '2024-04-15', 
     '2024-04-22', 
     8, 
-    'planned',
+    'ongoing',
     '{
         "score": 0,
         "star": {
@@ -280,7 +280,7 @@ VALUES
     1,
     1, 
     '2024-02-15', 
-    'in-progress',
+    'in-complete',
     null
 ),
 (
@@ -289,7 +289,6 @@ VALUES
     1, 
     '2024-03-20', 
     'in-progress',
-    'in-complete',
     null
 ),
 (
@@ -297,7 +296,7 @@ VALUES
     1,
     1, 
     '2024-05-30', 
-    'not-enroll',
+    'failed',
     null
 ),
 (
@@ -305,7 +304,7 @@ VALUES
     1,
     1, 
     '2024-04-25', 
-    'failed',
+    'not-enroll',
     null
 );
 
@@ -335,8 +334,8 @@ VALUES
 INSERT INTO transactions (action_type_id, user_id, description, timestamp)
 VALUES
 (5, 1, '{"course": 1}', '2024-02-01 10:23:00'),
-(5, 1, '{"course": 3}', '2024-02-01 10:45:30'),
-(5, 1, '{"course": 5}', '2024-02-01 11:10:15'),
+(5, 1, '{"course": 2}', '2024-02-01 10:45:30'),
+(5, 1, '{"course": 3}', '2024-02-01 11:10:15'),
 (5, 1, '{"course": 3}', '2024-02-01 11:55:00');
 
 INSERT INTO report_types (name, description)

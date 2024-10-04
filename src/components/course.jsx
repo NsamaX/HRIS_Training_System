@@ -114,9 +114,7 @@ const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }
               onRatingSelected={onRatingSelected} 
             />
           )}
-          {course.status === 'ongoing' && 
-            <ReviewAndEnrollButtons status={status} onEnroll={onEnroll} />
-          }
+          <ReviewAndEnrollButtons status={status} onEnroll={onEnroll} />
         </div>
       </div>
     </div>

@@ -34,11 +34,21 @@ app.get('/api/employees', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'Employee id required' });
   
   const query = `
-    SELECT e.first_name, e.last_name, e.email, p.name AS position, d.name AS department, e.date_joined
-    FROM employees e
-    LEFT JOIN positions p ON e.position_id = p.position_id
-    LEFT JOIN departments d ON e.department_id = d.department_id
-    WHERE e.employee_id = ?
+    SELECT 
+      e.first_name, 
+      e.last_name, 
+      e.email, 
+      p.name AS position, 
+      d.name AS department, 
+      e.date_joined
+    FROM 
+      employees e
+    LEFT JOIN 
+      positions p ON e.position_id = p.position_id
+    LEFT JOIN 
+      departments d ON e.department_id = d.department_id
+    WHERE 
+      e.employee_id = ?
   `;
   
   try {
@@ -55,14 +65,31 @@ app.get('/api/recent-courses', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'User id required' });
 
   const query = `
-    SELECT c.course_id AS id, c.name, t.timestamp
-    FROM enrollments en
-    INNER JOIN transactions t ON t.user_id = en.student_id 
-      AND JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = en.course_id
-    INNER JOIN training_courses c ON en.course_id = c.course_id
-    WHERE en.student_id = ?
-    ORDER BY en.enrollment_date DESC 
-    LIMIT 4
+    WITH LatestCourses AS (
+      SELECT 
+        en.course_id, 
+        c.name, 
+        MAX(t.timestamp) AS latest_timestamp
+      FROM 
+        enrollments en
+      INNER JOIN 
+        transactions t ON t.user_id = en.student_id AND JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = en.course_id
+      INNER JOIN 
+        training_courses c ON en.course_id = c.course_id
+      WHERE 
+        en.student_id = ?
+      GROUP BY 
+        en.course_id, c.name
+    )
+    SELECT 
+      lc.course_id AS id, 
+      lc.name, 
+      lc.latest_timestamp AS timestamp
+    FROM 
+      LatestCourses lc
+    ORDER BY 
+      lc.latest_timestamp DESC
+    LIMIT 4;
   `;
 
   try {
@@ -83,8 +110,10 @@ app.get('/api/courses-status', async (req, res) => {
       SUM(CASE WHEN ec.status = 'completed' THEN 1 ELSE 0 END) AS completed,
       SUM(CASE WHEN ec.status = 'in-complete' THEN 1 ELSE 0 END) AS incomplete,
       SUM(CASE WHEN ec.status = 'in-progress' THEN 1 ELSE 0 END) AS enrolled
-    FROM enrollments ec
-    WHERE ec.student_id = ?
+    FROM 
+      enrollments ec
+    WHERE 
+      ec.student_id = ?
   `;
 
   try {
@@ -100,10 +129,16 @@ app.get('/api/completed-courses', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'Student id required' });
 
   const query = `
-    SELECT e.course_id AS id, t.name, t.description
-    FROM enrollments e
-    LEFT JOIN training_courses t ON e.course_id = t.course_id
-    WHERE e.student_id = ? AND e.status = 'completed'
+    SELECT 
+      e.course_id AS id, 
+      t.name, 
+      t.description
+    FROM 
+      enrollments e
+    LEFT JOIN 
+      training_courses t ON e.course_id = t.course_id
+    WHERE 
+      e.student_id = ? AND e.status = 'completed'
   `;
 
   try {
@@ -120,10 +155,15 @@ app.get('/api/hall-of-fame', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'Employee id required' });
 
   const query = `
-    SELECT a.name, a.description
-    FROM hall_of_fame h 
-    LEFT JOIN achievements a ON h.achievement_id = a.achievement_id 
-    WHERE h.employee_id = ?
+    SELECT 
+      a.name, 
+      a.description
+    FROM 
+      hall_of_fame h 
+    LEFT JOIN 
+      achievements a ON h.achievement_id = a.achievement_id 
+    WHERE 
+      h.employee_id = ?
   `;
 
   try {
@@ -140,11 +180,19 @@ app.get('/api/suggested-courses', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'Student id required' });
 
   const query = `
-    SELECT c.course_id AS id, c.name, c.description, COALESCE(JSON_EXTRACT(c.rating, '$.score'), '0') AS score
-    FROM training_courses c
-    LEFT JOIN enrollments en ON en.course_id = c.course_id AND en.student_id = ?
-    WHERE en.student_id IS NULL 
-    ORDER BY score DESC
+    SELECT 
+      c.course_id AS id, 
+      c.name, 
+      c.description, 
+      COALESCE(JSON_EXTRACT(c.rating, '$.score'), '0') AS score
+    FROM 
+      training_courses c
+    LEFT JOIN 
+      enrollments en ON en.course_id = c.course_id AND en.student_id = ?
+    WHERE 
+      en.student_id IS NULL 
+    ORDER BY 
+      score DESC
   `;
 
   try {
@@ -160,12 +208,26 @@ app.get('/api/enrolled-courses', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'Employee id required' });
 
   const query = `
-    SELECT en.course_id AS id,
-      (SELECT CONCAT(e2.first_name, ' ', e2.last_name) FROM employees e2 WHERE e2.employee_id = en.user_enrolled_id) AS assign_by,
-      en.enrollment_date, t.name, t.date_start, t.date_end, t.duration, t.status
-    FROM enrollments en 
-    LEFT JOIN training_courses t ON en.course_id = t.course_id 
-    WHERE en.student_id = ? && en.status != 'complete'
+    SELECT en.course_id AS id, (
+      SELECT 
+        CONCAT(e2.first_name, ' ', e2.last_name) 
+      FROM 
+        employees e2 
+      WHERE 
+        e2.employee_id = en.user_enrolled_id
+      ) AS assign_by,
+      en.enrollment_date, 
+      t.name, 
+      t.date_start, 
+      t.date_end, 
+      t.duration, 
+      t.status
+    FROM 
+      enrollments en 
+    LEFT JOIN 
+      training_courses t ON en.course_id = t.course_id 
+    WHERE 
+      en.student_id = 1 && en.status IN ('in-complete', 'in-progress') && t.status NOT IN ('planned', 'canceled' )
   `;
 
   try {
@@ -179,12 +241,29 @@ app.get('/api/enrolled-courses', async (req, res) => {
 
 app.get('/api/courses', async (req, res) => {
   const { id } = req.query;
+
   const query = `
-    SELECT c.course_id AS id, c.name, c.description, c.platform, CONCAT(e.first_name, " ", e.last_name) AS instructor, c.date_start, c.date_end, c.duration, g.name AS group_name, JSON_EXTRACT(c.rating, '$.score') AS score, c.status
-    FROM training_courses c 
-    LEFT JOIN training_groups g ON c.course_group_id = g.group_id
-    LEFT JOIN employees e ON c.instructor_id = e.employee_id
-    ${id ? 'WHERE c.course_id = ?' : ''}
+    SELECT 
+      c.course_id AS id, 
+      c.name, 
+      c.description, 
+      c.platform, 
+      CONCAT(e.first_name, " ", e.last_name) AS instructor, 
+      c.date_start, 
+      c.date_end, 
+      c.duration, 
+      g.name AS group_name, 
+      JSON_EXTRACT(c.rating, '$.score') AS score, 
+      c.status
+    FROM 
+      training_courses c 
+    LEFT JOIN 
+      training_groups g ON c.course_group_id = g.group_id
+    LEFT JOIN 
+      employees e ON c.instructor_id = e.employee_id
+    WHERE 
+      ${id ? 'c.course_id = ?' : 'c.status = "ongoing"'}
+      ${id ? '' : 'AND c.status = "ongoing"'}
   `;
 
   try {
@@ -199,7 +278,14 @@ app.get('/api/course-status', async (req, res) => {
   const { course_id, student_id } = req.query;
   if (!course_id || !student_id) return res.status(400).json({ error: 'Both course_id and student_id required' });
 
-  const query = `SELECT e.status FROM enrollments e WHERE e.course_id = ? AND e.student_id = ?`;
+  const query = `
+    SELECT 
+      e.status 
+    FROM 
+      enrollments e 
+    WHERE 
+      e.course_id = ? AND e.student_id = ?
+  `;
 
   try {
     const [result] = await fetchData(query, [course_id, student_id]);
@@ -213,7 +299,14 @@ app.get('/api/course-rating', async (req, res) => {
   const { course_id } = req.query;
   if (!course_id) return res.status(400).json({ error: 'course_id required' });
 
-  const query = `SELECT JSON_EXTRACT(t.rating, '$.star') AS star FROM training_courses t WHERE t.course_id = ?`;
+  const query = `
+    SELECT 
+      JSON_EXTRACT(t.rating, '$.star') AS star 
+    FROM 
+      training_courses t 
+    WHERE 
+      t.course_id = ?
+  `;
 
   try {
     const [result] = await fetchData(query, [course_id]);
@@ -230,7 +323,14 @@ app.get('/api/course-vote', async (req, res) => {
     return res.status(400).json({ error: 'course_id and student_id are required' });
   }
 
-  const query = `SELECT rating AS vote FROM enrollments WHERE course_id = ? AND student_id = ?`;
+  const query = `
+    SELECT 
+      rating AS vote 
+    FROM 
+      enrollments 
+    WHERE 
+      course_id = ? AND student_id = ?
+  `;
   try {
     const result = await fetchData(query, [course_id, student_id]);
     if (result.length === 0) {
@@ -254,7 +354,14 @@ app.post('/api/course-vote', async (req, res) => {
   }
 
   // Step 1: Fetch the existing rating
-  const fetchQuery = `SELECT rating FROM enrollments WHERE course_id = ? AND student_id = ?`;
+  const fetchQuery = `
+    SELECT 
+      rating 
+    FROM 
+      enrollments 
+    WHERE 
+      course_id = ? AND student_id = ?
+  `;
   let existingRating;
   try {
     const existingResult = await fetchData(fetchQuery, [course_id, student_id]);
@@ -267,7 +374,15 @@ app.post('/api/course-vote', async (req, res) => {
   }
 
   // Step 2: Update the star rating JSON
-  let updateQuery = `SELECT JSON_EXTRACT(rating, '$.star') AS star, JSON_EXTRACT(rating, '$.score') AS score FROM training_courses WHERE course_id = ?`;
+  let updateQuery = `
+    SELECT 
+      JSON_EXTRACT(rating, '$.star') AS star, 
+      JSON_EXTRACT(rating, '$.score') AS score 
+    FROM 
+      training_courses 
+    WHERE 
+      course_id = ?
+  `;
   let currentStars;
   let currentScore;
   try {
