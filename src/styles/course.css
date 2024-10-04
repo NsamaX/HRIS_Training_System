@@ -50,12 +50,15 @@
 }
 
 .rating-row p {
-  margin-left: 20px;
+  margin: 0 6px;
+}
+
+.vote {
+  color: #FFC601;
 }
 
 .rating-row .bar-container {
   flex: 1;
-  margin-left: 10px; 
   height: 10px;
   background: #D9D9D9;
   border-radius: 6px; 

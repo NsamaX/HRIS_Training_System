@@ -49,7 +49,7 @@ const RatingBar = ({ status, ratingMap, onRatingSelected }) => {
               key={star}
               status={status}
               star={star}
-              votes={votes}
+              vote={0}
               percentage={percentage}
               onClick={() => onRatingSelected(star)}
             />
@@ -59,10 +59,11 @@ const RatingBar = ({ status, ratingMap, onRatingSelected }) => {
   );
 };
 
-const RatingRow = ({ star, votes, percentage, onClick }) => {
+const RatingRow = ({ status, star, vote, percentage, onClick }) => {
   return (
-    <div className="rating-row" onClick={onClick}>
-      <BodyMedium>{star} ★</BodyMedium>
+    <div className="rating-row" onClick={status === 'completed' ? onClick : null}>
+      <BodyMedium>{star}</BodyMedium>
+      <p className={vote >= star ? "vote" : ""}>★</p>
       <div className="bar-container">
         <div className="bar" style={{ width: `${percentage}%` }} />
       </div>
@@ -114,7 +115,7 @@ const Course = ({ course, rating, status, onRatingSelected, onEnroll }) => {
         <div className='course-right-column'>
           <CourseDescription course={course} />
           <RatingBar status={status} star={0} ratingMap={rating} onRatingSelected={onRatingSelected} />
-          <ReviewAndEnrollButtons status={'completed'} onEnroll={onEnroll} />
+          <ReviewAndEnrollButtons status={status} onEnroll={onEnroll} />
         </div>
       </div>
     </div>
