@@ -4,6 +4,7 @@ import { Header, Courses, ContactSection, CourseNotFound } from '../components/c
 const CoursesPage = () => {
   const [selectedFilters, setSelectedFilters] = useState({});
   const [courses, setCourses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); 
 
   useEffect(() => {
     fetch('http://localhost:5000/api/courses')
@@ -12,7 +13,15 @@ const CoursesPage = () => {
       .catch(console.error);
   }, []);
 
-  const filterOptions = {
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredCourses = courses.filter(course => 
+    course.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filterOptions = { 
     'Course Group': ['Personal Development', 'Management', 'Digital Marketing', 'Sales Techniques', 'Project Management', 'Innovation', 'Team Dynamics'],
     'Difficulty Level': ['Beginner', 'Intermediate', 'Advanced'],
     'Duration': ['Less than 1 day', '1-3 days', 'More than 3 days'],
@@ -51,8 +60,14 @@ const CoursesPage = () => {
 
   return (
     <div>
-      <Header filterOptions={filterOptions} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
-      {courses.length ? <Courses courses={courses} /> : <CourseNotFound />}
+      <Header 
+        filterOptions={filterOptions} 
+        selectedFilters={selectedFilters} 
+        setSelectedFilters={setSelectedFilters} 
+        searchTerm={searchTerm}
+        onSearchChange={handleSearchChange}
+      />
+      {filteredCourses.length ? <Courses courses={filteredCourses} /> : <CourseNotFound />}
       <ContactSection contactSections={contactSections} />
     </div>
   );

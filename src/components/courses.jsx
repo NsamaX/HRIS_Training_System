@@ -5,14 +5,20 @@ import SearchIcon from '@mui/icons-material/Search';
 import { TitleLarge, TitleMedium, BodyLarge, BodyMedium, BodySmall } from '../styles/StyledComponents';
 import '../styles/courses.css';
 
-const Header = ({ filterOptions }) => (
+const Header = ({ filterOptions, searchTerm, onSearchChange }) => (
   <header>
     <div className="header">
       <TitleLarge className="header-title">Empower Your Journey</TitleLarge>
       <BodyLarge className="header-subtitle">Explore courses designed to elevate your skills and enhance your career. Start learning today, and achieve your goals.</BodyLarge>
-      <div className="search-box">
-        <BodyMedium>Search courses...</BodyMedium>
-        <IconButton><SearchIcon /></IconButton>
+      <div className='search-bar-container'>
+        <input 
+          className='search-bar' 
+          type="text" 
+          placeholder="Search courses..." 
+          value={searchTerm}
+          onChange={onSearchChange}
+        />
+        <IconButton className='search-icon'><SearchIcon /></IconButton>
       </div>
     </div>
     <Separator filterOptions={filterOptions} />

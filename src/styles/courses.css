@@ -17,15 +17,23 @@
     width: 460px;
 }
 
-.search-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.search-bar-container {
+    margin-left: 30px;
+}
+
+.search-bar {
+    position: relative;
     padding-left: 16px;
     width: 400px;
     height: 30px;
-    background-color: white;
-    border-radius: 6px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    right: 36px;
 }
 
 .separator {
