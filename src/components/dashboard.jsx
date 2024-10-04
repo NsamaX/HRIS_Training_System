@@ -43,7 +43,12 @@ const getInitials = (name) => name.split(' ').map(word => word[0].toUpperCase())
 
 const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
   const total = completed + incomplete + enrolled;
-  const percentages = { completed: (completed / total) * 100, incomplete: (incomplete / total) * 100, enrolled: (enrolled / total) * 100 };
+  
+  const percentages = {
+    completed: (completed / total) * 100,
+    incomplete: ((incomplete + completed) / total) * 100,
+    enrolled: ((enrolled + completed + incomplete) / total) * 100
+  };
 
   const renderProgressCircle = (value, color, text = '', textColor = '#3C4252') => (
     <div className="circle-wrapper">
@@ -62,7 +67,7 @@ const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
         <div className="progress-circle">
           {renderProgressCircle(percentages.enrolled, enrolled === 0 ? '#D9D9D9' : '#3C4252')}
           {renderProgressCircle(percentages.incomplete, incomplete === 0 ? '#D9D9D9' : '#FFC501')}
-          {renderProgressCircle(percentages.completed, completed === 0 ? '#D9D9D9' : '#25D79B', `${total} Total`)}
+          {renderProgressCircle(percentages.completed, completed === 0 ? '#D9D9D9' : '#25D79B', `Total ${total != null ? total : 0}`)}
         </div>
       </div>
       {windowWidth >= 600 && (

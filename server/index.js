@@ -82,7 +82,7 @@ app.get('/api/courses-status', async (req, res) => {
     SELECT 
       SUM(CASE WHEN ec.status = 'completed' THEN 1 ELSE 0 END) AS completed,
       SUM(CASE WHEN ec.status = 'in-complete' THEN 1 ELSE 0 END) AS incomplete,
-      SUM(CASE WHEN ec.status = 'in-progress' THEN 1 ELSE 0 END) AS in-progress
+      SUM(CASE WHEN ec.status = 'in-progress' THEN 1 ELSE 0 END) AS 'enrolled'
     FROM enrollments ec
     WHERE ec.student_id = ?
   `;
