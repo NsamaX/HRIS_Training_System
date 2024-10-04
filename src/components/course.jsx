@@ -63,7 +63,7 @@ const RatingRow = ({ status, star, vote, percentage, onClick }) => {
   return (
     <div className="rating-row" onClick={status === 'completed' ? onClick : null}>
       <BodyMedium>{star}</BodyMedium>
-      <p className={vote >= star ? "vote" : ""}>★</p>
+      <p className={star <= vote.vote ? "vote" : ""}>★</p>
       <div className="bar-container">
         <div className="bar" style={{ width: `${percentage}%` }} />
       </div>

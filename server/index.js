@@ -287,6 +287,33 @@ app.get('/api/course-vote', async (req, res) => {
   }
 });
 
+app.post('/api/update-course-vote', async (req, res) => {
+  const { course_id, student_id, rating } = req.body;
+
+  if (rating < 0 || rating > 5) {
+    return res.status(400).json({ error: 'Rating must be between 0 and 5' });
+  }
+
+  const query = `
+    UPDATE enrollments
+    SET rating = ?
+    WHERE course_id = ? AND student_id = ?
+  `;
+
+  try {
+    const result = await fetchData(query, [rating, course_id, student_id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'No existing vote found for this course and user' });
+    }
+
+    res.status(200).json({ message: 'Vote updated successfully' });
+  } catch (error) {
+    console.error('Error updating course vote:', error);
+    res.status(500).json({ error: 'An error occurred while updating the course vote' });
+  }
+});
+
 app.listen(5000, () => {
   console.log('Server started on port 5000');
 });

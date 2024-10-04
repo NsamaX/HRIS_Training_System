@@ -4,105 +4,59 @@ import Course from '../components/course';
 
 const CoursesPage = () => {
   const [course, setCourse] = useState(null);
-  const [courseStatus, setCourseStatus] = useState(null);
+  const [courseStatus, setCourseStatus] = useState('');
   const [courseRatings, setCourseRatings] = useState(new Map());
-  const [userVote, setUserVote] = useState(null);
-  const [error, setError] = useState(null); 
+  const [userVote, setUserVote] = useState(0);
+  const [error, setError] = useState(null);
   const location = useLocation();
+  const section = { student_id: 1 };
 
-  const getCourseIdFromUrl = () => {
-    const searchParams = new URLSearchParams(location.search);
-    return searchParams.get('id');
+  const fetchData = async (url) => {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Failed to fetch: ${url}`);
+    return await response.json();
+  };
+
+  const fetchCourseData = async () => {
+    const courseId = new URLSearchParams(location.search).get('id');
+    try {
+      const [courseData, statusData, ratingData, voteData] = await Promise.all([
+        fetchData(`http://localhost:5000/api/courses?id=${courseId}`),
+        fetchData(`http://localhost:5000/api/course-status?course_id=${courseId}&student_id=${section.student_id}`),
+        fetchData(`http://localhost:5000/api/course-rating?course_id=${courseId}`),
+        fetchData(`http://localhost:5000/api/course-vote?course_id=${courseId}&student_id=${section.student_id}`),
+      ]);
+      
+      setCourse(courseData[0]);
+      setCourseStatus(statusData.status || '');
+      setCourseRatings(new Map(Object.entries(ratingData.star || {})));
+      setUserVote(voteData);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError('Error fetching data');
+    }
+  };
+
+  const handleRatingSelected = async (rating) => {
+    const newVote = userVote === rating ? 0 : rating;
+    setUserVote(newVote);
+    
+    try {
+      await fetch('http://localhost:5000/api/update-course-vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ course_id: course.id, student_id: section.student_id, rating: newVote }),
+      });
+      fetchCourseData();
+    } catch (err) {
+      console.error('Error updating vote:', err);
+      setError('Error updating vote');
+    }
   };
 
   useEffect(() => {
-    const courseId = getCourseIdFromUrl();
-
-    if (!courseId) {
-      setError("Course information not found in URL");
-      return;
-    }
-
-    fetch(`http://localhost:5000/api/courses?id=${courseId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch course data');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          setCourse(data[0]);
-        } else {
-          console.error('Course data is not in expected format');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching course data:', error);
-        setError('Error fetching course data');
-      });
-
-    fetch(`http://localhost:5000/api/course-status?course_id=${courseId}&student_id=1`)
-      .then(response => {
-        if (!response.ok) {
-          console.error('Error status:', response.status);
-          if (response.status === 404) {
-            return { status: '' };
-          }
-          return response.text().then(text => { throw new Error(text); });
-        }
-        return response.json();
-      })
-      .then(data => {
-        setCourseStatus(data.status || '');
-      })
-      .catch(error => {
-        console.error('Error fetching course status:', error);
-        setCourseStatus('');
-      });
-
-    fetch(`http://localhost:5000/api/course-rating?course_id=${courseId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch course rating');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data && data.star) {
-          const ratingsMap = new Map(Object.entries(data.star));
-          setCourseRatings(ratingsMap);
-        } else {
-          console.error('Course rating data is not in expected format');
-          setError('Unexpected course rating data format');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching course rating:', error);
-        setError('Error fetching course rating');
-      });
-
-    // Fetch user's vote
-    fetch(`http://localhost:5000/api/course-vote?course_id=${courseId}&student_id=1`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch user vote');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setUserVote(data);
-      })
-      .catch(error => {
-        console.error('Error fetching user vote:', error);
-        setError('Error fetching user vote');
-      });
-
+    fetchCourseData();
   }, [location]);
-
-  const handleRatingSelected = (userVote) => {
-    
-  };
 
   return (
     <div>
