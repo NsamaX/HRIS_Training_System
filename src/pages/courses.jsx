@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Header, Courses, ContactSection, CourseNotFound } from '../components/courses';
 
 const CoursesPage = () => {
-  const [selectedFilters, setSelectedFilters] = useState({
-    'Course Group': '',
-    'Difficulty Level': '',
-    'Duration': '',
-    'Learning Method': '',
-    'Learning Goals': '',
-  });
+  const [selectedFilters, setSelectedFilters] = useState({});
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/courses')
+      .then(response => response.json())
+      .then(setCourses)
+      .catch(console.error);
+  }, []);
 
   const filterOptions = {
     'Course Group': ['Personal Development', 'Management', 'Digital Marketing', 'Sales Techniques', 'Project Management', 'Innovation', 'Team Dynamics'],
@@ -19,24 +21,38 @@ const CoursesPage = () => {
   };
 
   const contactSections = [
-    { title: 'Contact Us', info: { Address: '123 Corporate Avenue, Bangkok, Thailand 10100', Phone: '+66 2 345 6789', Email: 'support@trainingcompany.com', 'Business Hours': 'Monday - Friday, 9:00 AM - 6:00 PM' }},
-    { title: 'Follow Us', info: { Facebook: 'facebook.com/TrainingCompany', Twitter: 'twitter.com/TrainingCompany', LinkedIn: 'linkedin.com/company/TrainingCompany', Instagram: 'instagram.com/TrainingCompany' }},
-    { title: 'Legal', info: { 'Privacy Policy': 'privacy-policy.com', 'Terms of Service': 'terms-of-service.com', 'Cookie Policy': 'cookie-policy.com' }},
+    {
+      title: 'Contact Us',
+      info: {
+        Address: '123 Corporate Avenue, Bangkok, Thailand 10100',
+        Phone: '+66 2 345 6789',
+        Email: 'support@trainingcompany.com',
+        'Business Hours': 'Monday - Friday, 9:00 AM - 6:00 PM',
+      },
+    },
+    {
+      title: 'Follow Us',
+      info: {
+        Facebook: 'facebook.com/TrainingCompany',
+        Twitter: 'twitter.com/TrainingCompany',
+        LinkedIn: 'linkedin.com/company/TrainingCompany',
+        Instagram: 'instagram.com/TrainingCompany',
+      },
+    },
+    {
+      title: 'Legal',
+      info: {
+        'Privacy Policy': 'privacy-policy.com',
+        'Terms of Service': 'terms-of-service.com',
+        'Cookie Policy': 'cookie-policy.com',
+      },
+    },
   ];
-
-  const [courses, setCourses] = useState([]);
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/courses')
-      .then(response => response.json())
-      .then(data => setCourses(data))
-      .catch(error => console.error('Error fetching course data:', error));
-  }, []);
 
   return (
     <div>
       <Header filterOptions={filterOptions} selectedFilters={selectedFilters} setSelectedFilters={setSelectedFilters} />
-      {courses.length === 0 ? <CourseNotFound /> : <Courses courses={courses} />}
+      {courses.length ? <Courses courses={courses} /> : <CourseNotFound />}
       <ContactSection contactSections={contactSections} />
     </div>
   );

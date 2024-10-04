@@ -6,19 +6,15 @@ import CoursePage from './pages/course';
 import CustomAppBar from './components/customAppBar';
 
 const App = () => {
-  const location = useLocation(); 
+  const location = useLocation();
 
   const getSelectedPage = () => {
-    switch (location.pathname) {
-      case '/dashboard':
-        return 0; 
-      case '/courses':
-        return 1; 
-      case '/course':
-        return -1; 
-      default:
-        return 0;
-    }
+    const pageMap = {
+      '/dashboard': 0,
+      '/courses': 1,
+      '/course': -1,
+    };
+    return pageMap[location.pathname] || 0;
   };
 
   return (
@@ -28,7 +24,7 @@ const App = () => {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/courses" element={<CoursesPage />} />
-        <Route path="/course" element={<CoursePage />} /> 
+        <Route path="/course" element={<CoursePage />} />
       </Routes>
     </>
   );
