@@ -190,7 +190,7 @@ app.get('/api/suggested-courses', async (req, res) => {
     LEFT JOIN 
       enrollments en ON en.course_id = c.course_id AND en.student_id = ?
     WHERE 
-      en.status = 'not-enroll'
+      en.status IS NULL 
     ORDER BY 
       score DESC
   `;
