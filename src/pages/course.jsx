@@ -43,11 +43,11 @@ const CoursesPage = () => {
   };
 
   const handleRatingSelected = async (rating) => {
-    const newVote = userVote === rating ? 0 : rating;
+    const newVote = rating;
     setUserVote(newVote);
     
     try {
-      await fetch('http://localhost:5000/api/update-course-vote', {
+      await fetch('http://localhost:5000/api/course-vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ course_id: course.id, student_id: section.student_id, rating: newVote }),

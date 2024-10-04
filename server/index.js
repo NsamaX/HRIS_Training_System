@@ -17,13 +17,13 @@ const db = mysql.createConnection({
 
 db.connect(err => {
   if (err) throw err;
-  console.log('Connected to MySQL database');
+  console.log('Connected to MySQL');
 });
 
 const fetchData = (query, params) => {
   return new Promise((resolve, reject) => {
     db.query(query, params, (error, results) => {
-      if (error) return reject('Database error');
+      if (error) return reject(error);
       resolve(results);
     });
   });
@@ -31,7 +31,7 @@ const fetchData = (query, params) => {
 
 app.get('/api/employees', async (req, res) => {
   const { id } = req.query;
-  if (!id) return res.status(400).json({ error: 'Employee id is required' });
+  if (!id) return res.status(400).json({ error: 'Employee id required' });
   
   const query = `
     SELECT e.first_name, e.last_name, e.email, p.name AS position, d.name AS department, e.date_joined
@@ -42,9 +42,9 @@ app.get('/api/employees', async (req, res) => {
   `;
   
   try {
-    const results = await fetchData(query, [id]);
-    if (results.length === 0) return res.status(404).json({ message: 'Employee not found' });
-    res.json(results[0]);
+    const [result] = await fetchData(query, [id]);
+    if (!result) return res.status(404).json({ message: 'Employee not found' });
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -52,22 +52,22 @@ app.get('/api/employees', async (req, res) => {
 
 app.get('/api/recent-courses', async (req, res) => {
   const { id } = req.query;
-  if (!id) return res.status(400).json({ error: 'User id is required' });
+  if (!id) return res.status(400).json({ error: 'User id required' });
 
   const query = `
     SELECT c.course_id AS id, c.name, t.timestamp
     FROM enrollments en
     INNER JOIN transactions t ON t.user_id = en.student_id 
-        AND JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = en.course_id
+      AND JSON_UNQUOTE(JSON_EXTRACT(t.description, '$.course')) = en.course_id
     INNER JOIN training_courses c ON en.course_id = c.course_id
     WHERE en.student_id = ?
     ORDER BY en.enrollment_date DESC 
-    LIMIT 4;
+    LIMIT 4
   `;
 
   try {
     const results = await fetchData(query, [id]);
-    if (results.length === 0) return res.status(404).json({ message: 'No courses found for this user' });
+    if (results.length === 0) return res.status(404).json({ message: 'No courses found' });
     res.json(results);
   } catch (error) {
     res.status(500).json({ error });
@@ -76,20 +76,20 @@ app.get('/api/recent-courses', async (req, res) => {
 
 app.get('/api/courses-status', async (req, res) => {
   const { id } = req.query;
-  if (!id) return res.status(400).json({ error: 'Student id is required' });
+  if (!id) return res.status(400).json({ error: 'Student id required' });
 
   const query = `
     SELECT 
       SUM(CASE WHEN ec.status = 'completed' THEN 1 ELSE 0 END) AS completed,
       SUM(CASE WHEN ec.status = 'in-complete' THEN 1 ELSE 0 END) AS incomplete,
-      SUM(CASE WHEN ec.status = 'in-progress' THEN 1 ELSE 0 END) AS 'enrolled'
+      SUM(CASE WHEN ec.status = 'in-progress' THEN 1 ELSE 0 END) AS enrolled
     FROM enrollments ec
     WHERE ec.student_id = ?
   `;
 
   try {
-    const results = await fetchData(query, [id]);
-    res.json(results.length > 0 ? results[0] : { completed: 0, incomplete: 0, enrolled: 0 });
+    const [result] = await fetchData(query, [id]);
+    res.json(result || { completed: 0, incomplete: 0, enrolled: 0 });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -97,7 +97,7 @@ app.get('/api/courses-status', async (req, res) => {
 
 app.get('/api/completed-courses', async (req, res) => {
   const { id } = req.query;
-  if (!id) return res.status(400).json({ error: 'Student id is required' });
+  if (!id) return res.status(400).json({ error: 'Student id required' });
 
   const query = `
     SELECT e.course_id AS id, t.name, t.description
@@ -108,7 +108,7 @@ app.get('/api/completed-courses', async (req, res) => {
 
   try {
     const results = await fetchData(query, [id]);
-    if (results.length === 0) return res.status(404).json({ message: 'No completed courses found for this student' });
+    if (results.length === 0) return res.status(404).json({ message: 'No completed courses' });
     res.json(results);
   } catch (error) {
     res.status(500).json({ error });
@@ -117,7 +117,7 @@ app.get('/api/completed-courses', async (req, res) => {
 
 app.get('/api/hall-of-fame', async (req, res) => {
   const { id } = req.query;
-  if (!id) return res.status(400).json({ error: 'Employee id is required' });
+  if (!id) return res.status(400).json({ error: 'Employee id required' });
 
   const query = `
     SELECT a.name, a.description
@@ -128,7 +128,7 @@ app.get('/api/hall-of-fame', async (req, res) => {
 
   try {
     const results = await fetchData(query, [id]);
-    if (results.length === 0) return res.status(404).json({ message: 'Hall of Fame not found for this employee' });
+    if (results.length === 0) return res.status(404).json({ message: 'Hall of Fame not found' });
     res.json(results);
   } catch (error) {
     res.status(500).json({ error });
@@ -137,36 +137,27 @@ app.get('/api/hall-of-fame', async (req, res) => {
 
 app.get('/api/suggested-courses', async (req, res) => {
   const { id } = req.query;
-
-  if (!id) {
-    return res.status(400).json({ error: 'student_id is required' });
-  }
+  if (!id) return res.status(400).json({ error: 'Student id required' });
 
   const query = `
-    SELECT c.course_id AS id, 
-           c.name, 
-           c.description, 
-           COALESCE(JSON_EXTRACT(c.rating, '$.score'), '0') AS score
+    SELECT c.course_id AS id, c.name, c.description, COALESCE(JSON_EXTRACT(c.rating, '$.score'), '0') AS score
     FROM training_courses c
-    LEFT JOIN training_groups g ON c.course_group_id = g.group_id
     LEFT JOIN enrollments en ON en.course_id = c.course_id AND en.student_id = ?
     WHERE en.student_id IS NULL 
     ORDER BY score DESC
   `;
 
   try {
-    const results = await fetchData(query, [id]); 
-
+    const results = await fetchData(query, [id]);
     res.json(results);
   } catch (error) {
-    console.error('Error fetching suggested courses:', error);
-    res.status(500).json({ error: 'An error occurred while fetching suggested courses' });
+    res.status(500).json({ error });
   }
 });
 
 app.get('/api/enrolled-courses', async (req, res) => {
   const { id } = req.query;
-  if (!id) return res.status(400).json({ error: 'Employee id is required' });
+  if (!id) return res.status(400).json({ error: 'Employee id required' });
 
   const query = `
     SELECT en.course_id AS id,
@@ -179,7 +170,7 @@ app.get('/api/enrolled-courses', async (req, res) => {
 
   try {
     const results = await fetchData(query, [id]);
-    if (results.length === 0) return res.status(404).json({ message: 'No courses found for this employee' });
+    if (results.length === 0) return res.status(404).json({ message: 'No courses found' });
     res.json(results);
   } catch (error) {
     res.status(500).json({ error });
@@ -188,9 +179,8 @@ app.get('/api/enrolled-courses', async (req, res) => {
 
 app.get('/api/courses', async (req, res) => {
   const { id } = req.query;
-
   const query = `
-    SELECT c.course_id AS id, c.name AS name, c.description, c.platform, CONCAT(e.first_name, " ", e.last_name) AS instructor, c.date_start, c.date_end, c.duration, g.name AS group_name, JSON_EXTRACT(c.rating, '$.score') AS score
+    SELECT c.course_id AS id, c.name, c.description, c.platform, CONCAT(e.first_name, " ", e.last_name) AS instructor, c.date_start, c.date_end, c.duration, g.name AS group_name, JSON_EXTRACT(c.rating, '$.score') AS score
     FROM training_courses c 
     LEFT JOIN training_groups g ON c.course_group_id = g.group_id
     LEFT JOIN employees e ON c.instructor_id = e.employee_id
@@ -207,114 +197,125 @@ app.get('/api/courses', async (req, res) => {
 
 app.get('/api/course-status', async (req, res) => {
   const { course_id, student_id } = req.query;
+  if (!course_id || !student_id) return res.status(400).json({ error: 'Both course_id and student_id required' });
 
-  if (!course_id || !student_id) {
-    return res.status(400).json({ error: 'Both course_id and student_id are required' });
-  }
-
-  const query = `
-    SELECT e.status 
-    FROM enrollments e 
-    WHERE e.course_id = ? 
-      AND e.student_id = ?
-  `;
+  const query = `SELECT e.status FROM enrollments e WHERE e.course_id = ? AND e.student_id = ?`;
 
   try {
-    const result = await fetchData(query, [course_id, student_id]);
-
-    if (result.length === 0) {
-      return res.json({ status: null });
-    }
-
-    res.json({ status: result[0].status });
+    const [result] = await fetchData(query, [course_id, student_id]);
+    res.json({ status: result ? result.status : null });
   } catch (error) {
-    console.error('Error fetching course status:', error);
-    res.status(500).json({ error: 'An error occurred while fetching course status' });
+    res.status(500).json({ error });
   }
 });
 
 app.get('/api/course-rating', async (req, res) => {
   const { course_id } = req.query;
+  if (!course_id) return res.status(400).json({ error: 'course_id required' });
 
-  if (!course_id) {
-    return res.status(400).json({ error: 'course_id is required' });
-  }
-
-  const query = `
-    SELECT JSON_EXTRACT(t.rating, '$.star') AS star 
-    FROM training_courses t
-    WHERE t.course_id = ?
-  `;
+  const query = `SELECT JSON_EXTRACT(t.rating, '$.star') AS star FROM training_courses t WHERE t.course_id = ?`;
 
   try {
-    const result = await fetchData(query, [course_id]);
-
-    if (result.length === 0) {
-      return res.status(404).json({ error: 'Course not found' });
-    }
-
-    const star = result[0].star;
-
-    if (star !== null) {
-      res.json({ star: JSON.parse(star) });
-    } else {
-      res.status(404).json({ error: 'Rating not found' });
-    }
+    const [result] = await fetchData(query, [course_id]);
+    if (!result) return res.status(404).json({ error: 'Course not found' });
+    res.json({ star: JSON.parse(result.star) });
   } catch (error) {
-    console.error('Error fetching course rating:', error);
-    res.status(500).json({ error: 'An error occurred while fetching course rating' });
+    res.status(500).json({ error });
   }
 });
 
 app.get('/api/course-vote', async (req, res) => {
   const { course_id, student_id } = req.query;
-
   if (!course_id || !student_id) {
     return res.status(400).json({ error: 'course_id and student_id are required' });
   }
 
-  const query = `
-    SELECT rating AS vote
-    FROM enrollments 
-    WHERE course_id = ? AND student_id = ?`;
-
+  const query = `SELECT rating AS vote FROM enrollments WHERE course_id = ? AND student_id = ?`;
   try {
     const result = await fetchData(query, [course_id, student_id]);
-
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'Vote not found' });
+    }
     res.json(result[0]);
   } catch (error) {
-    console.error('Error fetching course rating:', error);
-    res.status(500).json({ error: 'An error occurred while fetching course rating' });
+    console.error('Error fetching course vote:', error);
+    res.status(500).json({ error: 'An error occurred while fetching course vote' });
   }
 });
 
-app.post('/api/update-course-vote', async (req, res) => {
+app.post('/api/course-vote', async (req, res) => {
   const { course_id, student_id, rating } = req.body;
+  if (!course_id || !student_id || rating === undefined) {
+    return res.status(400).json({ error: 'course_id, student_id, and rating are required' });
+  }
 
   if (rating < 0 || rating > 5) {
     return res.status(400).json({ error: 'Rating must be between 0 and 5' });
   }
 
-  const query = `
-    UPDATE enrollments
-    SET rating = ?
-    WHERE course_id = ? AND student_id = ?
-  `;
+  // Step 1: Fetch the existing rating
+  const fetchQuery = `SELECT rating FROM enrollments WHERE course_id = ? AND student_id = ?`;
+  let existingRating;
+  try {
+    const existingResult = await fetchData(fetchQuery, [course_id, student_id]);
+    if (existingResult.length > 0) {
+      existingRating = existingResult[0].rating;
+    }
+  } catch (error) {
+    console.error('Error fetching existing rating:', error);
+    return res.status(500).json({ error: 'An error occurred while fetching existing rating' });
+  }
+
+  // Step 2: Update the star rating JSON
+  let updateQuery = `SELECT JSON_EXTRACT(rating, '$.star') AS star, JSON_EXTRACT(rating, '$.score') AS score FROM training_courses WHERE course_id = ?`;
+  let currentStars;
+  let currentScore;
+  try {
+    const starResult = await fetchData(updateQuery, [course_id]);
+    if (starResult.length > 0) {
+      currentStars = JSON.parse(starResult[0].star);
+      currentScore = starResult[0].score ? JSON.parse(starResult[0].score) : 0; // Ensure we safely parse the score
+    } else {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching course star ratings:', error);
+    return res.status(500).json({ error: 'An error occurred while fetching course star ratings' });
+  }
+
+  // Step 3: Update the star JSON
+  if (existingRating) {
+    // Decrease the count of the old rating
+    currentStars[existingRating] = currentStars[existingRating] > 0 ? currentStars[existingRating] - 1 : 0;
+  }
+  
+  // Increase the count of the new rating
+  currentStars[rating] = (currentStars[rating] || 0) + 1;
+
+  // Step 4: Recalculate the score
+  const totalVotes = Object.values(currentStars).reduce((total, count) => total + count, 0);
+  const weightedSum = Object.entries(currentStars).reduce((sum, [star, count]) => sum + (star * count), 0);
+  const newScore = totalVotes > 0 ? (weightedSum / totalVotes) : 0;
+
+  // Step 5: Prepare the new rating JSON
+  const updatedRatingJson = JSON.stringify({
+    score: newScore,
+    star: currentStars
+  });
+
+  // Step 6: Update the rating in the enrollments table and courses table
+  const updateEnrollmentQuery = `UPDATE enrollments SET rating = ? WHERE course_id = ? AND student_id = ?`;
+  const updateCourseQuery = `UPDATE training_courses SET rating = ? WHERE course_id = ?`;
 
   try {
-    const result = await fetchData(query, [rating, course_id, student_id]);
+    await fetchData(updateEnrollmentQuery, [rating, course_id, student_id]);
+    await fetchData(updateCourseQuery, [updatedRatingJson, course_id]);
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'No existing vote found for this course and user' });
-    }
-
-    res.status(200).json({ message: 'Vote updated successfully' });
+    res.status(200).json({ message: 'Vote updated successfully', updatedRating: updatedRatingJson });
   } catch (error) {
     console.error('Error updating course vote:', error);
-    res.status(500).json({ error: 'An error occurred while updating the course vote' });
+    return res.status(500).json({ error: 'An error occurred while updating the course vote' });
   }
 });
 
-app.listen(5000, () => {
-  console.log('Server started on port 5000');
-});
+app.listen(5000, () => console.log('Server running on port 5000'));

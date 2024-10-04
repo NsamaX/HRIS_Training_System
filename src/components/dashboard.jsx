@@ -43,12 +43,14 @@ const getInitials = (name) => name.split(' ').map(word => word[0].toUpperCase())
 
 const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
   const total = completed + incomplete + enrolled;
-  
-  const percentages = {
-    completed: (completed / total) * 100,
-    incomplete: ((incomplete + completed) / total) * 100,
-    enrolled: ((enrolled + completed + incomplete) / total) * 100
-  };
+
+  const percentages = total
+    ? {
+        completed: (completed / total) * 100,
+        incomplete: ((incomplete + completed) / total) * 100,
+        enrolled: ((enrolled + completed + incomplete) / total) * 100
+      }
+    : { completed: 0, incomplete: 0, enrolled: 0 };
 
   const renderProgressCircle = (value, color, text = '', textColor = '#3C4252') => (
     <div className="circle-wrapper">
@@ -65,9 +67,14 @@ const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
       <div className="progress-info">
         <TitleMedium>Progress</TitleMedium>
         <div className="progress-circle">
+        {renderProgressCircle(100, '#D9D9D9')}
           {renderProgressCircle(percentages.enrolled, enrolled === 0 ? '#D9D9D9' : '#3C4252')}
           {renderProgressCircle(percentages.incomplete, incomplete === 0 ? '#D9D9D9' : '#FFC501')}
-          {renderProgressCircle(percentages.completed, completed === 0 ? '#D9D9D9' : '#25D79B', `Total ${total != null ? total : 0}`)}
+          {renderProgressCircle(
+            percentages.completed,
+            completed === 0 ? '#D9D9D9' : '#25D79B',
+            total > 0 ? `Total ${total}` : ''
+          )}
         </div>
       </div>
       {windowWidth >= 600 && (

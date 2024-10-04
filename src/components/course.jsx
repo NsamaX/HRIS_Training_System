@@ -26,15 +26,6 @@ const CourseDescription = ({ course }) => {
 };
 
 const RatingBar = ({ status, ratingMap, userVote, onRatingSelected }) => {
-  if (!ratingMap || ratingMap.size === 0) {
-    return (
-      <div className="rating-bar">
-        <TitleMedium>Rating</TitleMedium>
-        <BodyMedium>Not available</BodyMedium>
-      </div>
-    );
-  }
-
   const totalVotes = Array.from(ratingMap.values()).reduce((a, b) => a + b, 0);
 
   return (
@@ -114,12 +105,14 @@ const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }
         </div>
         <div className='course-right-column'>
           <CourseDescription course={course} />
-          <RatingBar 
-            status={status} 
-            ratingMap={rating} 
-            userVote={userVote}
-            onRatingSelected={onRatingSelected} 
-          />
+          {status === 'completed' && (
+            <RatingBar 
+              status={status} 
+              ratingMap={rating} 
+              userVote={userVote}
+              onRatingSelected={onRatingSelected} 
+            />
+          )}
           <ReviewAndEnrollButtons status={status} onEnroll={onEnroll} />
         </div>
       </div>
