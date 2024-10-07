@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 require('dotenv').config();
 
 const app = express();
@@ -247,7 +247,7 @@ app.get('/api/courses', async (req, res) => {
       c.name, 
       c.description, 
       c.platform, 
-      CONCAT(e.first_name, " ", e.last_name) AS instructor, 
+      CONCAT(e.first_name, ' ', e.last_name) AS instructor, 
       c.date_start, 
       c.date_end, 
       c.duration, 
