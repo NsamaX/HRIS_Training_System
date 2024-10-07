@@ -1,8 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconButton, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { TitleLarge, TitleMedium, BodyLarge, BodyMedium, BodySmall } from '../styles/StyledComponents';
+import { Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { TitleLarge, TitleMedium, BodyLarge, BodyMedium, BodySmall } from '../styles/styledComponents';
 import '../styles/courses.css';
 
 const Header = ({ filterOptions, searchTerm, onSearchChange }) => (

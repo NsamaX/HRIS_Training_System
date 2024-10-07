@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { TitleLarge, TitleSmall, BodyMedium, BodySmall, TitleMedium } from '../styles/StyledComponents';
+import { TitleLarge, TitleSmall, BodyMedium, BodySmall, TitleMedium } from '../styles/styledComponents';
 import '../styles/dashboard.css';
 
 const Box = ({ left, flex, children }) => (
