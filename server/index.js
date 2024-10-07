@@ -348,6 +348,7 @@ app.get('/api/course-vote', async (req, res) => {
 
 app.post('/api/course-vote', async (req, res) => {
   const { course_id, student_id, rating } = req.body;
+
   if (!course_id || !student_id || rating === undefined) {
     return res.status(400).json({ error: 'course_id, student_id, and rating are required' });
   }
@@ -364,6 +365,7 @@ app.post('/api/course-vote', async (req, res) => {
     WHERE 
       course_id = ? AND student_id = ?
   `;
+
   let existingRating;
   try {
     const existingResult = await fetchData(fetchQuery, [course_id, student_id]);
@@ -384,12 +386,14 @@ app.post('/api/course-vote', async (req, res) => {
     WHERE 
       course_id = ?
   `;
+
   let currentStars;
   let currentScore;
   try {
     const starResult = await fetchData(updateQuery, [course_id]);
+
     if (starResult.length > 0) {
-      currentStars = JSON.parse(starResult[0].star);
+      currentStars = typeof starResult[0].star === 'string' ? JSON.parse(starResult[0].star) : starResult[0].star;
       currentScore = starResult[0].score ? JSON.parse(starResult[0].score) : 0;
     } else {
       return res.status(404).json({ error: 'Course not found' });
@@ -399,10 +403,10 @@ app.post('/api/course-vote', async (req, res) => {
     return res.status(500).json({ error: 'An error occurred while fetching course star ratings' });
   }
 
+  // Update stars
   if (existingRating) {
     currentStars[existingRating] = currentStars[existingRating] > 0 ? currentStars[existingRating] - 1 : 0;
   }
-  
   currentStars[rating] = (currentStars[rating] || 0) + 1;
 
   const totalVotes = Object.values(currentStars).reduce((total, count) => total + count, 0);
@@ -413,6 +417,8 @@ app.post('/api/course-vote', async (req, res) => {
     score: newScore,
     star: currentStars
   });
+
+  console.log('Updated rating JSON:', updatedRatingJson);
 
   const updateEnrollmentQuery = `UPDATE enrollments SET rating = ? WHERE course_id = ? AND student_id = ?`;
   const updateCourseQuery = `UPDATE training_courses SET rating = ? WHERE course_id = ?`;
