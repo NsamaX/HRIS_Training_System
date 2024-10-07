@@ -42,13 +42,13 @@ const CourseRecently = ({ courses, handleClick }) => (
 const getInitials = (name) => name.split(' ').map(word => word[0].toUpperCase()).join('');
 
 const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
-  const total = completed + incomplete + enrolled;
+  const total = Number(completed) + Number(incomplete) + Number(enrolled);
 
   const percentages = total
     ? {
-        completed: (completed / total) * 100,
-        incomplete: ((incomplete + completed) / total) * 100,
-        enrolled: ((enrolled + completed + incomplete) / total) * 100
+        completed: (Number(completed) / total) * 100,
+        incomplete: ((Number(incomplete) + Number(completed)) / total) * 100,
+        enrolled: ((Number(enrolled) + Number(completed) + Number(incomplete)) / total) * 100
       }
     : { completed: 0, incomplete: 0, enrolled: 0 };
 
@@ -67,7 +67,7 @@ const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
       <div className="progress-info">
         <TitleMedium>Progress</TitleMedium>
         <div className="progress-circle">
-        {renderProgressCircle(100, '#D9D9D9')}
+          {renderProgressCircle(100, '#D9D9D9')}
           {renderProgressCircle(percentages.enrolled, enrolled === 0 ? '#D9D9D9' : '#3C4252')}
           {renderProgressCircle(percentages.incomplete, incomplete === 0 ? '#D9D9D9' : '#FFC501')}
           {renderProgressCircle(

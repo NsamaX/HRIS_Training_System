@@ -261,7 +261,7 @@ app.get('/api/courses', async (req, res) => {
     LEFT JOIN 
       employees e ON c.instructor_id = e.employee_id
     WHERE 
-      ${id ? 'c.course_id = ?' : 'c.status = "ongoing"'}
+      ${id ? 'c.course_id = ?' : 'c.status = \'ongoing\''}
   `;
 
   try {
@@ -308,10 +308,15 @@ app.get('/api/course-rating', async (req, res) => {
 
   try {
     const [result] = await fetchData(query, [course_id]);
+
     if (!result) return res.status(404).json({ error: 'Course not found' });
-    res.json({ star: JSON.parse(result.star) });
+
+    const star = result.star;
+
+    res.json({ star });
   } catch (error) {
-    res.status(500).json({ error });
+    console.error('Error occurred:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
