@@ -1,5 +1,5 @@
 import React from 'react';
-import { TitleLarge, TitleMedium, BodyMedium } from '../styles/StyledComponents';
+import { TitleLarge, TitleMedium, BodyMedium } from '../styles/styledComponents';
 import '../styles/course.css';
 
 const CourseDescription = ({ course }) => {
