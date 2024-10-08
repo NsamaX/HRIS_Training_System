@@ -28,14 +28,14 @@ const CustomAppBar = ({ selectedPage }) => {
   const renderNavButton = ({ text, icon, path }, index) => (
     <div className='nav-button-container' key={index}>
       <Button
-        color={selectedPage === index ? 'inherit' : 'secondary'}
+        color={'white'}
         onClick={() => handleNavigation(path)}
         startIcon={icon}
         className={`nav-button ${selectedPage === index ? 'active' : ''}`}
       >
         {text}
       </Button>
-      {/* {selectedPage === index && <hr />} */}
+      {selectedPage === index && <hr />}
     </div>
   );
 

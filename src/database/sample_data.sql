@@ -334,7 +334,12 @@ VALUES
 (
     'Recent Courses', 
     'Report on the most recently completed courses by employees'
-);
+),
+(
+    'Write Course Review',
+    'User wrote a course review'
+)
+;
 
 INSERT INTO transactions (action_type_id, user_id, description, timestamp)
 VALUES

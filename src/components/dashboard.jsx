@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import AccountIcon from '../assets/account-icon.png';
 import { TitleLarge, TitleMedium, TitleSmall, BodyMedium, BodySmall } from '../styles/styledComponents';
 import '../styles/dashboard.css';
-import AccountIcon from '../assets/account-icon.png';
 
 const Box = ({ left, flex, children }) => (
   <div className={`box ${flex <= 3 ? 'smaller-box' : ''} ${left ? 'left-box' : 'right-box'}`} style={{ flex }}>

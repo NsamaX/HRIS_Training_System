@@ -17,7 +17,6 @@ const Header = ({ filterOptions, searchTerm, onSearchChange }) => (
           value={searchTerm}
           onChange={onSearchChange}
         />
-        {/* <IconButton className='search-icon'><SearchIcon /></IconButton> */}
       </div>
     </div>
     {/* <Separator filterOptions={filterOptions} /> */}
@@ -90,7 +89,7 @@ const CourseBox = ({ course }) => {
   const [imageSrc, setImageSrc] = useState('');
 
   useEffect(() => {
-    import(`../assets/${course.image}`)
+    import(`../assets/courses/${course.image}`)
       .then(image => {
         setImageSrc(image.default);
       })

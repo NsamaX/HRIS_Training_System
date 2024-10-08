@@ -1,112 +1,145 @@
 import React, { useEffect, useState } from 'react';
-import { TitleLarge, TitleSmall, BodyMedium } from '../styles/styledComponents';
+import { TitleLarge, TitleSmall, BodyMedium, TitleMedium } from '../styles/styledComponents';
 import '../styles/course.css';
-
-const CourseDescription = ({ course }) => {
-  return (
-    <div className='title'>
-      <TitleSmall>{course.name}</TitleSmall>
-      <div style={{ lineHeight: 1.6 }}>
-      <BodyMedium>
-        {course.description}
-        <br />
-        <br />
-        • Duration: {course.duration} hours 
-        <br />
-        • Rating: {course.score != null ? course.score : 'N/A'}
-        <br />
-        • Instructor: {course.instructor}
-        <br />
-        • Start Date: {new Date(course.date_start).toLocaleDateString()}
-        <br />
-        • End Date: {new Date(course.date_end).toLocaleDateString()}
-        <br />
-        • {course.platform}
-      </BodyMedium>
-      </div>
-    </div>
-  );
-};
-
-const RatingBar = ({ status, ratingMap, userVote, onRatingSelected }) => {
-  const totalVotes = Array.from(ratingMap.values()).reduce((a, b) => a + b, 0);
-
-  return (
-    <div className="rating-bar">
-      <TitleSmall>Rating</TitleSmall>
-      {Array.from(ratingMap.entries())
-        .sort((a, b) => b[0] - a[0])
-        .map(([star, votes]) => {
-          const percentage = totalVotes > 0 ? (votes / totalVotes) * 100 : 0;
-          return (
-            <RatingRow
-              key={star}
-              status={status}
-              star={star}
-              vote={userVote}
-              percentage={percentage}
-              onClick={() => onRatingSelected(star)}
-            />
-          );
-        })}
-    </div>
-  );
-};
-
-const RatingRow = ({ status, star, vote, percentage, onClick }) => {
-  return (
-    <div className="rating-row" onClick={status === 'completed' ? onClick : null}>
-      <BodyMedium>{star}</BodyMedium>
-      <p className={star <= vote.vote ? "vote" : ""}>★</p>
-      <div className="bar-container">
-        <div className="bar" style={{ width: `${percentage}%` }} />
-      </div>
-    </div>
-  );
-};
-
-const ReviewAndEnrollButtons = ({ enroll, status, onEnroll }) => {
-  return (
-    <div className='title'>
-      {status === 'completed' && (
-        <>
-          <TitleSmall>Share your thoughts</TitleSmall>
-          <BodyMedium>Please share your ideas with others for the benefit of the organization's further development.</BodyMedium>
-        </>
-      )}
-      <div className="review-buttons">
-        {status === 'completed' ? (
-          <>
-            <ActionButton label="Write a review" onClick={() => console.log("Review clicked!")} />
-          </>
-        ) : (
-          <ActionButton label={enroll ? "Check in" : "Enroll"} onClick={onEnroll} />
-        )}
-      </div>
-    </div>
-  );
-};
-
-const ActionButton = ({ label, onClick }) => {
-  return (
-    <button className="action-button" onClick={onClick}>
-      <BodyMedium>{label}</BodyMedium>
-    </button>
-  );
-};
 
 const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }) => {
   const [imageSrc, setImageSrc] = useState('');
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
+  const [reviewContent, setReviewContent] = useState('');
 
   useEffect(() => {
-    import(`../assets/${course.image}`)
+    import(`../assets/courses/${course.image}`)
       .then(image => {
         setImageSrc(image.default);
       })
       .catch(err => {
-        console.error("Image loading failed", err);
+        setImageSrc('../assets/image-not-found-scaled.png');
       });
   }, [course.image]);
+
+  const CourseDescription = ({ course }) => {
+    return (
+      <div className='title'>
+        <TitleSmall>{course.name}</TitleSmall>
+        <div style={{ lineHeight: 1.6 }}>
+        <BodyMedium>
+          {course.description}
+          <br />
+          <br />
+          • Duration: {course.duration} hours 
+          <br />
+          • Rating: {course.score != null ? course.score : 'N/A'}
+          <br />
+          • Instructor: {course.instructor}
+          <br />
+          • Start Date: {new Date(course.date_start).toLocaleDateString()}
+          <br />
+          • End Date: {new Date(course.date_end).toLocaleDateString()}
+          <br />
+          • {course.platform}
+        </BodyMedium>
+        </div>
+      </div>
+    );
+  };
+  
+  const RatingBar = ({ status, ratingMap, userVote, onRatingSelected }) => {
+    const totalVotes = Array.from(ratingMap.values()).reduce((a, b) => a + b, 0);
+  
+    return (
+      <div className="rating-bar">
+        <TitleSmall>Rating</TitleSmall>
+        {Array.from(ratingMap.entries())
+          .sort((a, b) => b[0] - a[0])
+          .map(([star, votes]) => {
+            const percentage = totalVotes > 0 ? (votes / totalVotes) * 100 : 0;
+            return (
+              <RatingRow
+                key={star}
+                status={status}
+                star={star}
+                vote={userVote}
+                percentage={percentage}
+                onClick={() => onRatingSelected(star)}
+              />
+            );
+          })}
+      </div>
+    );
+  };
+  
+  const RatingRow = ({ status, star, vote, percentage, onClick }) => {
+    return (
+      <div className="rating-row" onClick={status === 'completed' ? onClick : null}>
+        <BodyMedium>{star}</BodyMedium>
+        <p className={star <= vote.vote ? "vote" : ""}>★</p>
+        <div className="bar-container">
+          <div className="bar" style={{ width: `${percentage}%` }} />
+        </div>
+      </div>
+    );
+  };
+  
+  const ReviewAndEnrollButtons = ({ enroll, status, onEnroll, onOpenReviewPopup }) => {
+    return (
+      <div className='title'>
+        {status === 'completed' && (
+          <>
+            <TitleSmall>Share your thoughts</TitleSmall>
+            <BodyMedium>Please share your ideas with others for the benefit of the organization's further development.</BodyMedium>
+          </>
+        )}
+        <div className="review-buttons">
+          {status === 'completed' ? (
+            <>
+              <ActionButton label="Write a review" onClick={onOpenReviewPopup} />
+            </>
+          ) : (
+            <ActionButton label={enroll ? "Check in" : "Enroll"} onClick={onEnroll} />
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const ReviewPopup = ({ onClose, onSubmit }) => {
+    const [review, setReview] = useState('');
+
+    const handleSubmit = () => {
+      if (review.trim() === '') {
+        alert("Review can't be empty!");
+        return;
+      }
+      onSubmit(review);
+      onClose();
+    };    
+
+    return (
+      <div className="popup">
+        <div className="popup-content">
+          <TitleMedium>Write a Review</TitleMedium>
+          <textarea
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
+            placeholder="Write your review here..."
+            rows="4"
+          />
+          <div className="review-buttons">
+            <button className="action-button" onClick={handleSubmit}><BodyMedium>Submit</BodyMedium></button>
+            <button className="action-button" onClick={onClose}><BodyMedium>Close</BodyMedium></button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
+  const ActionButton = ({ label, onClick }) => {
+    return (
+      <button className="action-button" onClick={onClick}>
+        <BodyMedium>{label}</BodyMedium>
+      </button>
+    );
+  };
 
   return (
     <div className='course-content'>
@@ -126,10 +159,41 @@ const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }
             />
           )}
           <br />
-          <ReviewAndEnrollButtons enroll={userVote} status={status} onEnroll={onEnroll} />
+          <ReviewAndEnrollButtons
+            enroll={userVote}
+            status={status}
+            onEnroll={onEnroll}
+            onOpenReviewPopup={() => setShowReviewPopup(true)}
+          />
         </div>
       </div>
+      {showReviewPopup && (
+        <ReviewPopup
+          onClose={() => setShowReviewPopup(false)}
+          onSubmit={(review) => {
+            setReviewContent(review);
+            fetch('http://localhost:5000/api/course-review', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ course_id: course.id, review }),
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  console.log('Review submitted:', data);
+                } else {
+                  throw new Error('Review submission failed');
+                }
+              })
+              .catch(error => {
+                console.error('Error submitting review:', error);
+                alert('Failed to submit review, please try again.');
+              });            
+          }}
+        />
+      )}
     </div>
   );
 };
+
 export default Course;

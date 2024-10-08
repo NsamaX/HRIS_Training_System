@@ -7,9 +7,11 @@ const CoursesPage = () => {
   const [courseStatus, setCourseStatus] = useState('');
   const [courseRatings, setCourseRatings] = useState(new Map());
   const [currentVote, setCurrentVote] = useState(0);
+
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  
   const location = useLocation();
   const section = { student_id: 1 };
 
@@ -86,6 +88,18 @@ const CoursesPage = () => {
       setActionLoading(false);
     }
   };
+
+  const handleOpenReviewPopup = () => {
+    setShowReviewPopup(true);
+  };
+  
+  const handleCloseReviewPopup = () => {
+    setShowReviewPopup(false);
+  };
+  
+  const handleSubmitReview = (review) => {
+    setReviewContent(review);
+  };  
   
   useEffect(() => {
     let isMounted = true;
