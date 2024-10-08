@@ -110,9 +110,28 @@ const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }
         alert("Review can't be empty!");
         return;
       }
-      onSubmit(review);
-      onClose();
-    };    
+    
+      fetch('http://localhost:5000/api/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          report_date: new Date().toISOString().split('T')[0],
+          report_data: `Course ${course.name}: ${review}`,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          console.log('Report submitted:', data);
+        } else {
+          throw new Error('Report submission failed');
+        }
+      })
+      .catch(error => {
+        console.error('Error submitting report:', error);
+        alert('Failed to submit report, please try again.');
+      });
+    };      
 
     return (
       <div className="popup">
@@ -172,23 +191,26 @@ const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }
           onClose={() => setShowReviewPopup(false)}
           onSubmit={(review) => {
             setReviewContent(review);
-            fetch('http://localhost:5000/api/course-review', {
+            fetch('http://localhost:5000/api/reports', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ course_id: course.id, review }),
+              body: JSON.stringify({
+                report_date: new Date().toISOString().split('T')[0],
+                report_data: `Course: ${course.name} \n${review}`, 
+              }),
             })
               .then(response => response.json())
               .then(data => {
-                if (data.success) {
-                  console.log('Review submitted:', data);
+                if (data.message) {
+                  console.log('Report submitted:', data);
                 } else {
-                  throw new Error('Review submission failed');
+                  throw new Error('Report submission failed');
                 }
               })
               .catch(error => {
-                console.error('Error submitting review:', error);
-                alert('Failed to submit review, please try again.');
-              });            
+                console.error('Error submitting report:', error);
+                alert('Failed to submit report, please try again.');
+              });                     
           }}
         />
       )}

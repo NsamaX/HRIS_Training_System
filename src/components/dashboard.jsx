@@ -22,7 +22,7 @@ const UserInfoBox = ({ employee }) => {
         <img className="user-icon" src={AccountIcon} alt="account-icon" />
       {/* </div> */}
       <div className="user-info-text">
-        <TitleMedium>{`${!first_name || !last_name ? 'Name: ' : ''} ${first_name || ''} ${last_name || ''}`}</TitleMedium>
+        <TitleMedium>{`${!first_name || !last_name ? 'Name' : ''} ${first_name || ''} ${last_name || ''}`}</TitleMedium>
         <BodyMedium>Email: {email}</BodyMedium>
         <BodyMedium>Position: {position}</BodyMedium>
         <BodyMedium>Department: {department}</BodyMedium>

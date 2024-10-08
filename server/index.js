@@ -485,4 +485,25 @@ app.delete('/api/unenroll', async (req, res) => {
   }
 });
 
+app.post('/api/reports', (req, res) => {
+  const { report_date, report_data } = req.body;
+  const report_type_id = 4;
+
+  if (!report_type_id || !report_date || !report_data) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  const sql = 'INSERT INTO reports (report_type_id, report_date, report_data) VALUES (?, ?, ?)';
+  const values = [report_type_id, report_date, report_data];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting report:', err);
+      res.status(500).json({ error: 'Error inserting report' });
+    } else {
+      res.status(201).json({ message: 'Report successfully inserted', reportId: result.insertId });
+    }
+  });
+});
+
 app.listen(5000, () => console.log('Server running on port 5000'));

@@ -94,7 +94,7 @@ const CourseBox = ({ course }) => {
         setImageSrc(image.default);
       })
       .catch(err => {
-        console.error("Image loading failed", err);
+        setImageSrc('../assets/image-not-found-scaled.png');
       });
   }, [course.image]);
 

@@ -334,12 +334,7 @@ VALUES
 (
     'Recent Courses', 
     'Report on the most recently completed courses by employees'
-),
-(
-    'Write Course Review',
-    'User wrote a course review'
-)
-;
+);
 
 INSERT INTO transactions (action_type_id, user_id, description, timestamp)
 VALUES
@@ -361,24 +356,10 @@ VALUES
 (
     'System Usage', 
     'Detailed report on system usage activities'
-);
-
-INSERT INTO reports (report_type_id, report_date, report_data)
-VALUES
-(
-    1, 
-    '2024-01-31', 
-    'Performance evaluations for all employees in Q1 2024'
 ),
 (
-    2, 
-    '2024-02-15', 
-    'Summary of training courses conducted in January 2024'
-),
-(
-    3, 
-    '2024-03-01', 
-    'Detailed system usage report for February 2024'
+    'Course Review',
+    'User wrote a course review'
 );
 
 INSERT INTO achievements (name, description)
@@ -386,23 +367,8 @@ VALUES
 (
     'Employee of the Month', 
     'Awarded to the best-performing employee of the month'
-),
-(
-    'Outstanding Leadership', 
-    'Recognizes exceptional leadership skills demonstrated by an employee'
-),
-(
-    'Perfect Attendance', 
-    'Awarded to employees with no absences for the year'
-),
-(
-    'Innovation Award', 
-    'Recognizes creative solutions implemented by an employee'
 );
 
 INSERT INTO hall_of_fame (employee_id, achievement_id)
 VALUES
-(1, 1),
-(1, 2),
-(1, 3),
-(1, 4); 
+(1, 1); 
