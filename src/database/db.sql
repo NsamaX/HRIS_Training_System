@@ -116,6 +116,7 @@ CREATE TABLE achievements (
 CREATE TABLE hall_of_fame (
     employee_id INT NOT NULL,
     achievement_id INT NOT NULL,
+    PRIMARY KEY (employee_id, achievement_id),
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
     FOREIGN KEY (achievement_id) REFERENCES achievements(achievement_id)
 );

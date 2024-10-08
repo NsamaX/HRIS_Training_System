@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 require('dotenv').config();
 
 const app = express();
@@ -13,10 +13,14 @@ const db = mysql.createConnection({
   password: process.env.PASSWORD,
   database: process.env.DATABASE,
   port: process.env.PORT,
+  waitForConnections: true,
 });
 
 db.connect(err => {
-  if (err) throw err;
+  if (err) {
+    console.error('Error connecting to the database:', err);
+    return;
+  }
   console.log('Connected to MySQL');
 });
 
@@ -247,7 +251,7 @@ app.get('/api/courses', async (req, res) => {
       c.name, 
       c.description, 
       c.platform, 
-      CONCAT(e.first_name, " ", e.last_name) AS instructor, 
+      CONCAT(e.first_name, ' ', e.last_name) AS instructor, 
       c.date_start, 
       c.date_end, 
       c.duration, 
@@ -261,7 +265,7 @@ app.get('/api/courses', async (req, res) => {
     LEFT JOIN 
       employees e ON c.instructor_id = e.employee_id
     WHERE 
-      ${id ? 'c.course_id = ?' : 'c.status = "ongoing"'}
+      ${id ? 'c.course_id = ?' : 'c.status = \'ongoing\''}
   `;
 
   try {
@@ -308,10 +312,15 @@ app.get('/api/course-rating', async (req, res) => {
 
   try {
     const [result] = await fetchData(query, [course_id]);
+
     if (!result) return res.status(404).json({ error: 'Course not found' });
-    res.json({ star: JSON.parse(result.star) });
+
+    const star = result.star;
+
+    res.json({ star });
   } catch (error) {
-    res.status(500).json({ error });
+    console.error('Error occurred:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -343,6 +352,7 @@ app.get('/api/course-vote', async (req, res) => {
 
 app.post('/api/course-vote', async (req, res) => {
   const { course_id, student_id, rating } = req.body;
+
   if (!course_id || !student_id || rating === undefined) {
     return res.status(400).json({ error: 'course_id, student_id, and rating are required' });
   }
@@ -359,6 +369,7 @@ app.post('/api/course-vote', async (req, res) => {
     WHERE 
       course_id = ? AND student_id = ?
   `;
+
   let existingRating;
   try {
     const existingResult = await fetchData(fetchQuery, [course_id, student_id]);
@@ -379,12 +390,14 @@ app.post('/api/course-vote', async (req, res) => {
     WHERE 
       course_id = ?
   `;
+
   let currentStars;
   let currentScore;
   try {
     const starResult = await fetchData(updateQuery, [course_id]);
+
     if (starResult.length > 0) {
-      currentStars = JSON.parse(starResult[0].star);
+      currentStars = typeof starResult[0].star === 'string' ? JSON.parse(starResult[0].star) : starResult[0].star;
       currentScore = starResult[0].score ? JSON.parse(starResult[0].score) : 0;
     } else {
       return res.status(404).json({ error: 'Course not found' });
@@ -394,10 +407,10 @@ app.post('/api/course-vote', async (req, res) => {
     return res.status(500).json({ error: 'An error occurred while fetching course star ratings' });
   }
 
+  // Update stars
   if (existingRating) {
     currentStars[existingRating] = currentStars[existingRating] > 0 ? currentStars[existingRating] - 1 : 0;
   }
-  
   currentStars[rating] = (currentStars[rating] || 0) + 1;
 
   const totalVotes = Object.values(currentStars).reduce((total, count) => total + count, 0);
@@ -408,6 +421,8 @@ app.post('/api/course-vote', async (req, res) => {
     score: newScore,
     star: currentStars
   });
+
+  console.log('Updated rating JSON:', updatedRatingJson);
 
   const updateEnrollmentQuery = `UPDATE enrollments SET rating = ? WHERE course_id = ? AND student_id = ?`;
   const updateCourseQuery = `UPDATE training_courses SET rating = ? WHERE course_id = ?`;
