@@ -1,26 +1,29 @@
-import React from 'react';
-import { TitleLarge, TitleMedium, BodyMedium } from '../styles/styledComponents';
+import React, { useEffect, useState } from 'react';
+import { TitleLarge, TitleSmall, BodyMedium } from '../styles/styledComponents';
 import '../styles/course.css';
 
 const CourseDescription = ({ course }) => {
   return (
     <div className='title'>
-      <TitleMedium>{course.name}</TitleMedium>
+      <TitleSmall>{course.name}</TitleSmall>
+      <div style={{ lineHeight: 1.6 }}>
       <BodyMedium>
         {course.description}
         <br />
-        Duration: {course.duration} hours 
         <br />
-        Rating: {course.score != null ? course.score : 'N/A'}
+        • Duration: {course.duration} hours 
         <br />
-        Instructor: {course.instructor}
+        • Rating: {course.score != null ? course.score : 'N/A'}
         <br />
-        Start Date: {new Date(course.date_start).toLocaleDateString()}
+        • Instructor: {course.instructor}
         <br />
-        End Date: {new Date(course.date_end).toLocaleDateString()}
+        • Start Date: {new Date(course.date_start).toLocaleDateString()}
         <br />
-        {course.platform}
+        • End Date: {new Date(course.date_end).toLocaleDateString()}
+        <br />
+        • {course.platform}
       </BodyMedium>
+      </div>
     </div>
   );
 };
@@ -30,7 +33,7 @@ const RatingBar = ({ status, ratingMap, userVote, onRatingSelected }) => {
 
   return (
     <div className="rating-bar">
-      <TitleMedium>Rating</TitleMedium>
+      <TitleSmall>Rating</TitleSmall>
       {Array.from(ratingMap.entries())
         .sort((a, b) => b[0] - a[0])
         .map(([star, votes]) => {
@@ -67,7 +70,7 @@ const ReviewAndEnrollButtons = ({ enroll, status, onEnroll }) => {
     <div className='title'>
       {status === 'completed' && (
         <>
-          <TitleMedium>Share your thoughts</TitleMedium>
+          <TitleSmall>Share your thoughts</TitleSmall>
           <BodyMedium>Please share your ideas with others for the benefit of the organization's further development.</BodyMedium>
         </>
       )}
@@ -75,10 +78,9 @@ const ReviewAndEnrollButtons = ({ enroll, status, onEnroll }) => {
         {status === 'completed' ? (
           <>
             <ActionButton label="Write a review" onClick={() => console.log("Review clicked!")} />
-            <ActionButton label="Get Certificate" onClick={() => console.log("Certificate clicked!")} />
           </>
         ) : (
-          <ActionButton label={enroll ? "Unenroll" : "Enroll"} onClick={onEnroll} />
+          <ActionButton label={enroll ? "Check in" : "Enroll"} onClick={onEnroll} />
         )}
       </div>
     </div>
@@ -94,15 +96,25 @@ const ActionButton = ({ label, onClick }) => {
 };
 
 const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }) => {
+  const [imageSrc, setImageSrc] = useState('');
+
+  useEffect(() => {
+    import(`../assets/${course.image}`)
+      .then(image => {
+        setImageSrc(image.default);
+      })
+      .catch(err => {
+        console.error("Image loading failed", err);
+      });
+  }, [course.image]);
+
   return (
     <div className='course-content'>
       <div className='title'>
         <TitleLarge>{course.group_name}</TitleLarge>
       </div>
       <div className='course-columns'>
-        <div className='course-left-column'>
-          {/* image */}
-        </div>
+        <img className='course-left-column' src={imageSrc} alt={course.name} />
         <div className='course-right-column'>
           <CourseDescription course={course} />
           {status === 'completed' && (
@@ -113,11 +125,11 @@ const Course = ({ course, rating, status, userVote, onRatingSelected, onEnroll }
               onRatingSelected={onRatingSelected} 
             />
           )}
+          <br />
           <ReviewAndEnrollButtons enroll={userVote} status={status} onEnroll={onEnroll} />
         </div>
       </div>
     </div>
   );
 };
-
 export default Course;

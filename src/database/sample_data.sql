@@ -157,10 +157,11 @@ VALUES
     'Courses that cover project planning, execution, and delivery techniques'
 );
 
-INSERT INTO training_courses (course_group_id, name, description, platform, instructor_id, date_start, date_end, duration, status, rating)
+INSERT INTO training_courses (course_group_id, image, name, description, platform, instructor_id, date_start, date_end, duration, status, rating)
 VALUES
 (
     1, 
+    'leadership.png',
     'Leadership 101', 
     'Introductory course on leadership principles', 
     'Meet: xxx xxx xxxx',
@@ -182,6 +183,7 @@ VALUES
 ),
 (
     2, 
+    'advanced_java_programming.jpg',
     'Advanced Java Programming', 
     'Deep dive into Java for advanced users', 
     'Onsite: Building Leadership',
@@ -203,6 +205,7 @@ VALUES
 ),
 (
     3, 
+    'communication.jpg',
     'Effective Communication Skills', 
     'Learn techniques to improve workplace communication', 
     'Online: www.communication-course.com',
@@ -224,6 +227,7 @@ VALUES
 ),
 (
     4, 
+    'time_management.jpg',
     'Time Management Mastery', 
     'Master the art of managing your time effectively', 
     'Hybrid: Part onsite, part online',
@@ -245,6 +249,7 @@ VALUES
 ),
 (
     5, 
+    'project_management_fundamentals.jpg',
     'Project Management Fundamentals', 
     'Introduction to project management methodologies', 
     'Onsite: Project Management HQ',

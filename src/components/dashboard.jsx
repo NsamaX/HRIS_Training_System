@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { TitleLarge, TitleSmall, BodyMedium, BodySmall, TitleMedium } from '../styles/styledComponents';
+import { TitleLarge, TitleMedium, TitleSmall, BodyMedium, BodySmall } from '../styles/styledComponents';
 import '../styles/dashboard.css';
+import AccountIcon from '../assets/account-icon.png';
 
 const Box = ({ left, flex, children }) => (
   <div className={`box ${flex <= 3 ? 'smaller-box' : ''} ${left ? 'left-box' : 'right-box'}`} style={{ flex }}>
@@ -17,9 +18,11 @@ const UserInfoBox = ({ employee }) => {
 
   return (
     <div className="user-info-box">
-      <div className="user-icon"></div>
+      {/* <div className="user-icon"> */}
+        <img className="user-icon" src={AccountIcon} alt="account-icon" />
+      {/* </div> */}
       <div className="user-info-text">
-        <TitleMedium>Name: {`${first_name || ''} ${last_name || ''}`}</TitleMedium>
+        <TitleMedium>{`${!first_name || !last_name ? 'Name: ' : ''} ${first_name || ''} ${last_name || ''}`}</TitleMedium>
         <BodyMedium>Email: {email}</BodyMedium>
         <BodyMedium>Position: {position}</BodyMedium>
         <BodyMedium>Department: {department}</BodyMedium>
@@ -65,7 +68,7 @@ const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
   return (
     <div className="progress-section">
       <div className="progress-info">
-        <TitleMedium>Progress</TitleMedium>
+        <TitleSmall>Progress</TitleSmall>
         <div className="progress-circle">
           {renderProgressCircle(100, '#D9D9D9')}
           {renderProgressCircle(percentages.enrolled, enrolled === 0 ? '#D9D9D9' : '#3C4252')}
@@ -100,7 +103,7 @@ const ProgressSection = ({ completed, incomplete, enrolled, windowWidth }) => {
 
 const Container = ({ title, items, renderRow }) => (
   <div className="achievements-container">
-    <TitleMedium>{title}</TitleMedium>
+    <TitleSmall>{title}</TitleSmall>
     {items.map((item, index) => renderRow({ ...item, index }))}
   </div>
 );
@@ -112,7 +115,7 @@ const Row = ({ name, description, id, score, handleClick, windowWidth }) => (
       <div className="suggested-course-icon"></div>
       <div className="achievement-text">
         <div className="suggested-course-score">
-          <TitleSmall className='course-score-text'>{name}</TitleSmall>
+          <BodyMedium className='course-score-text'>{name}</BodyMedium>
           {score != null && <>
             <BodyMedium>{score}</BodyMedium>
             <BodyMedium className='course-score-icon' style={{ color: '#FFC501' }}>★</BodyMedium>
@@ -197,7 +200,7 @@ const Dashboard = ({ employee, recentlyCourses, status, completedCourses, achiev
           <div className="row-box">
             <Box left={true} flex={windowWidth >= 600 ? 3 : 5}>
               <div className="recent-courses">
-                <TitleMedium>Recently Courses</TitleMedium>
+                <TitleSmall>Recently Courses</TitleSmall>
                 <CourseRecently courses={recentlyCourses} handleClick={handleClick} />
               </div>
             </Box>

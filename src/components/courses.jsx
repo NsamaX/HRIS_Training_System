@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { TitleLarge, TitleMedium, BodyLarge, BodyMedium, BodySmall } from '../styles/styledComponents';
+import { TitleLarge, TitleMedium, BodyMedium, BodySmall, TitleSmall } from '../styles/styledComponents';
 import '../styles/courses.css';
 
 const Header = ({ filterOptions, searchTerm, onSearchChange }) => (
   <header>
     <div className="header">
-      <TitleLarge className="header-title">Empower Your Journey</TitleLarge>
-      <BodyLarge className="header-subtitle">Explore courses designed to elevate your skills and enhance your career. Start learning today, and achieve your goals.</BodyLarge>
+      <TitleMedium className="header-title">Empower Your Journey</TitleMedium>
+      <BodyMedium className="header-subtitle">Explore courses designed to elevate your skills and enhance your career. Start learning today, and achieve your goals.</BodyMedium>
       <div className='search-bar-container'>
         <input 
           className='search-bar' 
@@ -20,7 +20,7 @@ const Header = ({ filterOptions, searchTerm, onSearchChange }) => (
         {/* <IconButton className='search-icon'><SearchIcon /></IconButton> */}
       </div>
     </div>
-    <Separator filterOptions={filterOptions} />
+    {/* <Separator filterOptions={filterOptions} /> */}
   </header>
 );
 
@@ -72,7 +72,6 @@ const CourseNotFound = () => (
 
 const Courses = ({ courses }) => (
   <div className="course-list">
-    <TitleLarge>Courses</TitleLarge>
     <CourseList courses={courses} />
   </div>
 );
@@ -88,12 +87,23 @@ const CourseList = ({ courses }) => (
 const CourseBox = ({ course }) => {
   const navigate = useNavigate();
   const handleClick = () => navigate(`/course?id=${course.id}`);
+  const [imageSrc, setImageSrc] = useState('');
+
+  useEffect(() => {
+    import(`../assets/${course.image}`)
+      .then(image => {
+        setImageSrc(image.default);
+      })
+      .catch(err => {
+        console.error("Image loading failed", err);
+      });
+  }, [course.image]);
 
   return (
     <article className="course-box" onClick={handleClick}>
-      <div className="course-image" />
+      <img className='course-image' src={imageSrc} alt="course.name" />
       <div className="course-info title">
-        <TitleMedium>{course.name}</TitleMedium>
+        <TitleSmall>{course.name}</TitleSmall>
         <BodyMedium>{course.description}</BodyMedium>
         <BodyMedium>Duration: {course.duration} days</BodyMedium>
         <BodyMedium>Start Date: {new Date(course.date_start).toLocaleDateString()}</BodyMedium>
@@ -121,7 +131,7 @@ const ContactSection = ({ contactSections }) => (
 
 const InfoSection = ({ title, info }) => (
   <section className="info-section title">
-    <TitleMedium>{title}</TitleMedium>
+    <TitleSmall>{title}</TitleSmall>
     {Object.entries(info).map(([key, value]) => (
       <BodyMedium key={key}>{`${key}: ${value}`}</BodyMedium>
     ))}

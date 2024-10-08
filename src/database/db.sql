@@ -52,6 +52,7 @@ CREATE TABLE training_groups (
 CREATE TABLE training_courses (
     course_id INT PRIMARY KEY AUTO_INCREMENT,
     course_group_id INT,
+    image VARCHAR(255),
     name VARCHAR(255) NOT NULL,
     description TEXT,
     platform VARCHAR(255),

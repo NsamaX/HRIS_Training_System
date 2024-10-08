@@ -248,6 +248,7 @@ app.get('/api/courses', async (req, res) => {
   const query = `
     SELECT 
       c.course_id AS id, 
+      c.image,
       c.name, 
       c.description, 
       c.platform, 
@@ -315,7 +316,7 @@ app.get('/api/course-rating', async (req, res) => {
 
     if (!result) return res.status(404).json({ error: 'Course not found' });
 
-    const star = result.star;
+    const star = JSON.parse(result.star);
 
     res.json({ star });
   } catch (error) {

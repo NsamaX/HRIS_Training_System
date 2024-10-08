@@ -58,8 +58,8 @@
 }
 
 .user-icon {
-    min-width: 120px;
-    min-height: 120px;
+    max-width: 120px;
+    max-height: 120px;
     background-color: #D9D9D9;
     border-radius: 50%;
     margin-right: 20px;
@@ -70,11 +70,11 @@
     flex-direction: column;
 }
 
-.cat {
-    margin: 10px 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 6px;
+.recent-courses {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .course-grid {

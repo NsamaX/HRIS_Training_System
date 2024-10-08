@@ -7,21 +7,21 @@ const theme = {
   text: {
     titleLarge: {
       color: "#3C4252",
-      fontSize: "24px",
+      fontSize: "36px",
       fontWeight: 600,
       fontFamily: "'Roboto', sans-serif",
       cssVar: "--font-size-title-large",
     },
     titleMedium: {
       color: "#3C4252",
-      fontSize: "16px",
+      fontSize: "26px",
       fontWeight: 600,
       fontFamily: "'Roboto', sans-serif",
       cssVar: "--font-size-title-medium",
     },
     titleSmall: {
       color: "#3C4252",
-      fontSize: "12px",
+      fontSize: "16px",
       fontWeight: 600,
       fontFamily: "'Roboto', sans-serif",
       cssVar: "--font-size-title-small",
