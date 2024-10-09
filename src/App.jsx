@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import DashboardPage from './pages/dashboard';
-import CoursesPage from './pages/courses';
-import CoursePage from './pages/course';
+import DashboardPage from './EMP/dashboard';
+import CoursesPage from './EMP/courses';
+import CoursePage from './EMP/course';
 import CustomAppBar from './components/customAppBar';
 
 const App = () => {
