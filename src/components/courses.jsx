@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { TitleLarge, TitleMedium, BodyMedium, BodySmall, TitleSmall } from '../styles/styledComponents';
 import '../styles/courses.css';

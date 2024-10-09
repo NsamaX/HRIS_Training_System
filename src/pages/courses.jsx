@@ -37,9 +37,8 @@ const CoursesPage = () => {
 
   const filterOptions = {
     'Course Group': ['Personal Development', 'Management', 'Digital Marketing', 'Sales Techniques', 'Project Management', 'Innovation', 'Team Dynamics'],
-    'Difficulty Level': ['Beginner', 'Intermediate', 'Advanced'],
     'Duration': ['Less than 1 day', '1-3 days', 'More than 3 days'],
-    'Learning Method': ['Online', 'In-person', 'Hybrid', 'Self-paced'],
+    'Learning Method': ['Online', 'Onsite', 'Hybrid'],
   };
 
   const contactSections = [

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+
 import AccountIcon from '../assets/account-icon.png';
 import { TitleLarge, TitleMedium, TitleSmall, BodyMedium, BodySmall } from '../styles/styledComponents';
 import '../styles/dashboard.css';
@@ -18,9 +20,7 @@ const UserInfoBox = ({ employee }) => {
 
   return (
     <div className="user-info-box">
-      {/* <div className="user-icon"> */}
-        <img className="user-icon" src={AccountIcon} alt="account-icon" />
-      {/* </div> */}
+      <img className="user-icon" src={AccountIcon} alt="account-icon" />
       <div className="user-info-text">
         <TitleMedium>{`${!first_name || !last_name ? 'Name' : ''} ${first_name || ''} ${last_name || ''}`}</TitleMedium>
         <BodyMedium>Email: {email}</BodyMedium>
